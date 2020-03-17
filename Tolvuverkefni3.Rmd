@@ -1,0 +1,119 @@
+---
+title: "Tölvuverkefni 3"
+author: "Ásmundur Óskar Ásmundsson (aoa27@hi.is) og Helgi Sigtryggsson (hes86@hi.is)"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r pakkar, include=FALSE}
+library(readr)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(kableExtra)
+library(tidyr)
+```
+
+## a) liður
+Byrjum á því að lesa inn gögnin:
+```{r, lesa gögn}
+ah <- read.csv("husnaedi.csv", sep=";")
+```
+
+```{r, ákvarða hverfi, include=FALSE}
+set.seed(3110)
+(hverfi<-sample(c(20,90,100),1))
+```
+
+Við síum út þannig að við séum bara að vinna með íbúðareignir í okkar hverfi.
+```{r, síun}
+ah <- ah %>%
+  filter(matssvaedi == hverfi) %>%
+  filter(teg_eign == "Íbúðareign")
+```
+
+## b) liður
+
+Teiknum stuðlarit af verði íbúðanna:
+```{r, stuðlarit af verði}
+ggplot(data=ah, aes(nuvirdi)) + geom_histogram(binwidth = 1000) + xlab("Verð") + ylab("Fjöldi") + labs(caption = paste("Mynd 1: Stuðlarit af verði íbúða í hverfi númer",toString(hverfi))) + theme(plot.caption = element_text(hjust = 0.5))
+
+medal_verd <- mean(ah$nuvirdi)
+dreifni <- var(ah$nuvirdi)
+```
+
+Meðalverð íbúðanna er `r format(medal_verd, scientific=FALSE)` og dreifni þeirra er `r format(dreifni, scientific=FALSE)`.
+
+## c) liður
+Reiknum meðaltöl úr úrtökum sem hafa stærð n=1,...,5000. Teiknum línurit af meðaltölunum og setjum inn sanna meðaltalið sem rauða línu:
+```{r, úrtök}
+medal_n <- sapply(1:5000, function(i) mean(sample(ah$nuvirdi, i, replace=TRUE)))
+qplot(1:5000, medal_n, geom="line") + geom_hline(aes(yintercept=medal_verd), color="red") + xlab("Númer úrtaks") + ylab("Meðaltal") + labs(caption = "Mynd 2: Línurit af meðaltölum með sanna meðaltalinu.") + theme(plot.caption = element_text(hjust = 0.5))
+```
+
+Hér sjáum við að þegar við tökum stærri og stærri úrtök úr þýðinu þá fáum við meðaltal sem nálgast raunverulega meðaltalið. Hér er lögmál mikis fjölda að verkum. Niðurstöður eru í samræmi við setninguna um \textit{lögmál mikils fjölda} en hún segir meðaltal niðurstaðna sem fást þegar mikill fjöldi líkindatilrauna eru framkvæmdar gefur góða nálgun á væntigildi niðurstaðanna.
+
+## d) liður
+
+Tökum 10000 sinnum úrtök úr þýðinu af stærð n=2,5,20,400 og setjum meðaltal úrtakanna í fylki:
+
+```{r, úrtak}
+staerd1<-replicate(10000, mean(sample(ah$nuvirdi, 2)))
+staerd2<-replicate(10000, mean(sample(ah$nuvirdi, 5)))
+staerd3<-replicate(10000, mean(sample(ah$nuvirdi, 20)))
+staerd4<-replicate(10000, mean(sample(ah$nuvirdi, 400)))
+```
+
+## e) liður
+
+Setjum fylkin okkar í gagnaramma og setjum hann á langt snið. Teiknum svo fjögur stuðlarit og höfum inni sanna meðaltalið sem rauða línu:
+```{r}
+gagnatafla<-tibble(staerd1, staerd2, staerd3, staerd4)
+gagnatafla.long<-pivot_longer(gagnatafla, everything(), names_to = "Staerd", values_to = "Medaltal")
+
+ggplot(gagnatafla.long, aes(Medaltal)) +  geom_histogram(bins=50) + geom_vline(aes(xintercept=medal_verd), color="red") + xlab("Meðaltal") + ylab("Fjöldi") + facet_wrap(vars(Staerd)) + labs(caption = "Mynd 3: Fjögur stuðlarit af staerd1, staerd2, staerd3 og staerd4, þar sem rauð lína sínir sanna meðaltalið.") + theme(plot.caption = element_text(hjust = 0.5))
+```
+
+## f) liður
+
+Teiknum stuðlaritin aftur nema nú er skalinn á x-ásnum frjáls.
+```{r}
+ggplot(gagnatafla.long, aes(Medaltal)) +  geom_histogram(bins=50) + geom_vline(aes(xintercept=medal_verd), color="red") + xlab("Meðaltal") + ylab("Fjöldi") + facet_wrap(vars(Staerd), scales = "free_x") + labs(caption = "Mynd 4: Fjögur stuðlarit af staerd1, staerd2, staerd3 og staerd4, þar sem rauð lína sínir sanna meðaltalið.") + theme(plot.caption = element_text(hjust = 0.5))
+```
+
+## g) liður
+
+Reiknum meðaltal og dreifni meðaltalanna úr d) lið og setjum upp í töflu með meðaltalinu og dreifninni sem var reiknuð í b) lið, við látum gildin sem voru reiknuð í b) lið fá n=NA:
+```{r}
+medaltal1 <- mean(staerd1)
+medaltal2 <- mean(staerd2)
+medaltal3 <- mean(staerd3)
+medaltal4 <- mean(staerd4)
+
+dreifni1 <- var(staerd1)
+dreifni2 <- var(staerd2)
+dreifni3 <- var(staerd3)
+dreifni4 <- var(staerd4)
+
+n <- 1:400
+
+data <- data.frame(n, Meðaltal=c(medaltal1,medaltal2,medaltal3,medaltal4), Dreifni=c(dreifni1,dreifni2,dreifni3,dreifni4))
+data <- add_row(data, n = NA, Meðaltal = medal_verd, Dreifni = dreifni)
+data %>%
+  group_by(n) %>%
+  filter(n==2 || n==5 || n==20 || n==400 || is.na(n)) %>%
+  kable(align = "rrr", caption="Tafla 1: Sýnir samanburð á meðaltali og dreifni meðaltalanna úr d) lið, auk meðaltals og dreifni úr b) lið.") %>%
+  kable_styling(position = "center")
+```
+
+
+## h) liður
+Setjum fram höfuðmarkgildisregluna:
+
+Höfuðmarkgildisreglan: Látum $X_1, X_2, . . .$ vera óháðar slembistærðir sem allar hafa sama dreififall með endanlegt væntigildi $\mu = E[X_i], i = 1, 2, ...,$ og endanlega strangt jákvæða dreifni $\sigma^2 = Var[X_i], i = 1, 2, ...$ þá gildir fyrir öll $x \in \mathbb{R}$ að $$P \left( \frac{X_1+...+X_n - n\mu}{\sigma \sqrt n} \leq x \right) \rightarrow \Phi(x), n \rightarrow \infty.$$
+
+## i) liður
+Niðurstöðurnar úr liðum d-f eru í góðu samræmi við höfuðmarkgildissetninguna, sem áður var lýst. Samkvæmt þeirri setningu fylgir líkindafallið normaldreifingu, með góðri nálgun, fyrir stór úrtök. Við sjáum að eftir því sem stærð úrtaks stækkar fellur dreifingin betur að normaldreifingu.
