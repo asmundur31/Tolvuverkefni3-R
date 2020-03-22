@@ -55,23 +55,41 @@ ah %>%
   count(kt2, name="fjoldi")
 ```
 
-```{r, tafal fyrir sem sýnir kynþroskahlutfall á hverju hafsvæði}
+```{r, tafla sem sýnir kynþroskahlutfall á hverju hafsvæði}
 ah %>%
   group_by(hafsvaedi, kt2) %>%
-  count(kt2, name="fjoldi")# %>%
-  #mutate(hlutfall = fjoldi[kt2 == "Kynþroska"])
+  count(kt2, name="fjoldi") %>%
+  mutate(hlutfall = fjoldi[kt2 == "Kynþroska"]/fjoldi)
 ```
 
 ## c) liður
 ```{r, tafla sem sýnir fjölda fiska, meðallengd, meðalþyngd og staðalfrávik lengdar eftir aldri}
 tafla <- ah %>%
   group_by(aldur) %>%
-  summarise("Fjöldi fiska" = length(aldur),
-            "Meðallengd" = mean(le),
-            "Meðalþyngd" =mean(osl),
-            "Staðalfrávik lengdar" = sd(le))
+  summarise("Fjöldi fiska" = length(aldur),"Meðallengd" = mean(le), "Meðalþyngd" =mean(osl), "Staðalfrávik lengdar" = sd(le))
+tafla
 ```
 Úr töflunni má lesa að flestir fiskar eru þriggja til sex ára. Fáir fiskar eru yngri en þriggja ára og fiskum eldri en sex ára fer hratt minnkandi. Þá eykst lengd fiskanna með hækkandi aldri og dreifnin á gildi lengda verður meiri með hækkandi aldri. Þá þyngjast fiskarnir með hækkandi aldri.
+
+```{r, Mynd sem sýnir lengd fiska eftir aldri}
+  ggplot(ah, aes(x = aldur, y = le)) + labs(
+        title = "Graf sem sýnir lengd fiska eftir aldri",
+        x = "Aldur",
+        y = "Lengd"
+    ) +
+    geom_point(color = 1, size = 2) +
+    geom_point(aes(x = aldur, y = Meðallengd),tafla, color = 2, size = 3)
+```
+
+```{r, Kassarit sem sýnir lengd fiska eftir aldri}
+  ah$aldur <- factor(ah$aldur)
+  ggplot(ah,aes(x = aldur, y = le)) + labs(
+        x = "Aldur",
+        y = "Lengd"
+    ) +
+    geom_boxplot()
+```
+
 
 ```{r, Mynd sem sýnir lengd fiska eftir aldri}
 ggplot(ah, aes(x = aldur, y = le)) + labs(x = "Aldur", y = "Lengd") +
