@@ -23,9 +23,28 @@ Byrjum á því að lesa inn gögnin:
 ah <- read.csv("data98.csv", sep=",")
 ```
 
-```{r, búum til nýja breytu}
+```{r, búum til nýjar breytur}
+r2d <-
+function(r)
+{
+	lat <- floor(r/100)
+	lon <- (r - lat * 100) %% 50
+	halfb <- (r - 100 * lat - lon)/100
+	lon <-  - (lon + 0.5)
+	lat <- lat + 60 + halfb + 0.25
+	data.frame(lat = lat, lon = lon)
+}
+latitude<- r2d(ah$reit)$lat
+longtitude <- r2d(ah$reit)$lon
+hafsvaedi <- ifelse(latitude < 65, 
+                    ifelse(longtitude < -19, "SV","SA"),
+                    ifelse(longtitude < -19, "NV","NA")
+                    )
+kt2 <- ifelse(ah$kt == 1, "Ókynþroska", "Kynþroska")
 ah <- ah %>%
-  mutate(hafsvaedi = ah$reit)
+  mutate(hafsvaedi = factor(hafsvaedi), 
+         kt2 = factor(kt2)
+         )
 ```
 
 
