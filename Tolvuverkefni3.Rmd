@@ -38,7 +38,7 @@ latitude<- r2d(ah$reit)$lat
 longtitude <- r2d(ah$reit)$lon
 hafsvaedi <- ifelse(latitude < 65, 
                     ifelse(longtitude < -19, "SV","SA"),
-                    ifelse(longtitude < -19, "NV","NA")
+                    ifelse(longtitude < -19, "NV","NAu")
                     )
 kt2 <- ifelse(ah$kt == 1, "Ókynþroska", "Kynþroska")
 ah <- ah %>%
@@ -49,6 +49,18 @@ ah <- ah %>%
 
 
 ## b) liður
+```{r, tafla fyrir fjölda fiska af hvoru kynþroskastigi eftir hafsvæðum}
+ah %>%
+  group_by(hafsvaedi, kt2) %>%
+  count(kt2, name="fjoldi")
+```
+
+```{r, tafal fyrir sem sýnir kynþroskahlutfall á hverju hafsvæði}
+ah %>%
+  group_by(hafsvaedi, kt2) %>%
+  count(kt2, name="fjoldi") %>%
+  mutate(hlutfall = fjoldi[kt2 == "Kynþroska"])
+```
 
 ## c) liður
 
