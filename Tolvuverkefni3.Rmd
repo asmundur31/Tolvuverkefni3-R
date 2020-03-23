@@ -74,8 +74,9 @@ xlab("Hafsvæði") + ylab("Fjöldi")
 ## c) liður
 ```{r, tafla sem sýnir fjölda fiska, meðallengd, meðalþyngd og staðalfrávik lengdar eftir aldri}
 taflac <- ah %>%
-  group_by("Aldur" = aldur) %>%
-  summarise("Fjöldi fiska" = length(aldur),"Meðallengd" = mean(le), "Meðalþyngd" =mean(osl), "Staðalfrávik lengdar" = sd(le)) %>% kable(align = "llll") %>% column_spec(1:5, width_min = "10em")
+  group_by(aldur) %>%
+  summarise("Fjöldi fiska" = length(aldur),"Meðallengd" = mean(le), "Meðalþyngd" =mean(osl), "Staðalfrávik lengdar" = sd(le)) #%>% kable(align = "lllll") %>%
+  #kable_styling()
 taflac
 ```
 Úr töflunni má lesa að flestir fiskar eru þriggja til sex ára. Fáir fiskar eru yngri en þriggja ára og fiskum eldri en sex ára fer hratt minnkandi. Þá eykst lengd fiskanna með hækkandi aldri og dreifnin á gildi lengda verður meiri með hækkandi aldri. Þá þyngjast fiskarnir með hækkandi aldri.
