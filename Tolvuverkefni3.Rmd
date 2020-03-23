@@ -111,7 +111,6 @@ fiskar1 <- sample_n(hafsvaedi1, 50)
 set.seed(3110)
 fiskar2 <- sample_n(hafsvaedi2, 50)
 fiskar <- rbind(fiskar1, fiskar2)
-fiskar
 ```
 
 ## e) liður
