@@ -98,7 +98,20 @@ taflac
     ) +
     geom_boxplot()
 ```
+##!!!!!!!!!!!!Hér vantar að svara spurningum úr c lið!!!!!!!!!!!!!!!!!!!!
 ## d) liður
+```{r, Tvö hafsvæði valin á slembin hátt, gerum töflu með 50 fiskum af hvoru gefnu hafsvæði}
+set.seed(3110)
+(svaedi<-sample(unique(hafsvaedi),2))
+hafsvaedi1 <- filter(ah, hafsvaedi == "NV")
+hafsvaedi2 <- filter(ah, hafsvaedi == "NAu")
+set.seed(3110)
+fiskar1 <- sample_n(hafsvaedi1, 50)
+set.seed(3110)
+fiskar2 <- sample_n(hafsvaedi2, 50)
+fiskar <- rbind(fiskar1, fiskar2)
+fiskar
+```
 
 ## e) liður
 
