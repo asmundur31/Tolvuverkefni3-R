@@ -53,13 +53,15 @@ ah <- ah %>%
 ah %>%
   group_by(hafsvaedi, kt2) %>%
   count(kt2, name="fjoldi")
+kable(prop.table(table(ah$hafsvaedi, ah$kt2), margin = 1))
+kable(round(prop.table(table(ah$hafsvaedi, ah$kt2),margin = 1), 7))
 ```
 
 ```{r, tafla sem sýnir kynþroskahlutfall á hverju hafsvæði}
-ah %>%
+tableb <- ah %>%
   group_by(hafsvaedi, kt2) %>%
-  count(kt2, name="fjoldi") %>%
-  mutate(hlutfall = fjoldi[kt2 == "Kynþroska"]/fjoldi)
+  count(kt2, name="fjoldi")
+tableb %>% kable(prop.table(tableb), margin=1)
 ```
 
 ## c) liður
