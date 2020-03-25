@@ -50,26 +50,34 @@ ah <- ah %>%
 
 ## b) liður
 ```{r, tafla fyrir fjölda fiska af hvoru kynþroskastigi eftir hafsvæðum}
-ah %>%
-  group_by(hafsvaedi, kt2) %>%
-  count(kt2, name="fjoldi")
-kable(prop.table(table(ah$hafsvaedi, ah$kt2), margin = 1))
-kable(round(prop.table(table(ah$hafsvaedi, ah$kt2),margin = 1), 7))
+taflab <- ah %>%
+  group_by("Hafsvæði" = hafsvaedi,kt2) %>%
+  count(kt2, name="Fjöldi")
+taflab
 ```
 
 ```{r, tafla sem sýnir kynþroskahlutfall á hverju hafsvæði}
-tableb <- ah %>%
-  group_by(hafsvaedi, kt2) %>%
-  count(kt2, name="fjoldi")
-tableb %>% kable(prop.table(tableb), margin=1)
+c <- vector()
+f <- vector()
+for (i in 1:4)
+  c[i] = taflab$Fjöldi[2*i-1]+taflab$Fjöldi[2*i]
+for (i in 1:8)
+  f[i] = taflab$Fjöldi[i]/c[ceiling(i/2)]
+taflab[ , "Hlutfall"] <- f
+taflab
+```
+```{r, Mynd sem er lýsandi fyrir fjölda fiska af hvoru kynþroskastigi í hverjum flokki af hafsvæðunum fjórum}
+ggplot(ah, aes(hafsvaedi, fill=kt2)) + geom_bar(position='dodge') +
+xlab("Hafsvæði") + ylab("Fjöldi")
 ```
 
 ## c) liður
 ```{r, tafla sem sýnir fjölda fiska, meðallengd, meðalþyngd og staðalfrávik lengdar eftir aldri}
-tafla <- ah %>%
+taflac <- ah %>%
   group_by(aldur) %>%
-  summarise("Fjöldi fiska" = length(aldur),"Meðallengd" = mean(le), "Meðalþyngd" =mean(osl), "Staðalfrávik lengdar" = sd(le))
-tafla
+  summarise("Fjöldi fiska" = length(aldur),"Meðallengd" = mean(le), "Meðalþyngd" =mean(osl), "Staðalfrávik lengdar" = sd(le)) #%>% kable(align = "lllll") %>%
+  #kable_styling()
+taflac
 ```
 Úr töflunni má lesa að flestir fiskar eru þriggja til sex ára. Fáir fiskar eru yngri en þriggja ára og fiskum eldri en sex ára fer hratt minnkandi. Þá eykst lengd fiskanna með hækkandi aldri og dreifnin á gildi lengda verður meiri með hækkandi aldri. Þá þyngjast fiskarnir með hækkandi aldri.
 
@@ -80,7 +88,7 @@ tafla
         y = "Lengd"
     ) +
     geom_point(color = 1, size = 2) +
-    geom_point(aes(x = aldur, y = Meðallengd),tafla, color = 2, size = 3)
+    geom_point(aes(x = aldur, y = Meðallengd),taflac, color = 2, size = 3)
 ```
 
 ```{r, Kassarit sem sýnir lengd fiska eftir aldri}
@@ -91,22 +99,20 @@ tafla
     ) +
     geom_boxplot()
 ```
-
-
-```{r, Mynd sem sýnir lengd fiska eftir aldri}
-ggplot(ah, aes(x = aldur, y = le)) + labs(x = "Aldur", y = "Lengd") +
-  geom_point(color=1, size=1) +
-  geom_point(tafla, aes(x = aldur, y = aldur_medaltal)) + 
-  geom_point(color=2, size=2)
-```
-```{r}
-  ggplot(ah,aes(x = aldur, y = le)) + labs(
-        x = "Aldur",
-        y = "Lengd"
-    ) +
-    geom_boxplot()
-```
+##!!!!!!!!!!!!Hér vantar að svara spurningum úr c lið!!!!!!!!!!!!!!!!!!!!
 ## d) liður
+```{r, Tvö hafsvæði valin á slembin hátt, gerum töflu með 50 fiskum af hvoru gefnu hafsvæði}
+set.seed(3110)
+(svaedi<-sample(unique(hafsvaedi),2))
+hafsvaedi1 <- filter(ah, hafsvaedi == "NV")
+hafsvaedi2 <- filter(ah, hafsvaedi == "NAu")
+set.seed(3110)
+fiskar1 <- sample_n(hafsvaedi1, 50)
+set.seed(3110)
+fiskar2 <- sample_n(hafsvaedi2, 50)
+fiskar <- rbind(fiskar1, fiskar2)
+fiskar
+```
 
 ## e) liður
 
