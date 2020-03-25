@@ -105,12 +105,15 @@ taflac
 ```{r, Tvö hafsvæði valin á slembin hátt, gerum töflu með 50 fiskum af hvoru gefnu hafsvæði}
 set.seed(3110)
 (svaedi<-sample(unique(hafsvaedi),2))
+```
+Við fáum sem sagt hafsvæðin "NV" og "NAu"
+```{r, Tafla með 50 fiskum af hvoru gefnu hafsvæði}
 hafsvaedi1 <- filter(ah, hafsvaedi == "NV")
 hafsvaedi2 <- filter(ah, hafsvaedi == "NAu")
 set.seed(3110)
-fiskar1 <- sample_n(hafsvaedi1, 50)
+fiskar1 <- sample_n(hafsvaedi1, 50, replace = F)
 set.seed(3110)
-fiskar2 <- sample_n(hafsvaedi2, 50)
+fiskar2 <- sample_n(hafsvaedi2, 50, replace = F)
 fiskar <- rbind(fiskar1, fiskar2)
 ```
 
@@ -125,15 +128,39 @@ Forsendur fyrir því að tilgátuprófið gefi heilvita niðurstöðu er að g�
 tilgatuprofe <- t.test(fiskar$le~fiskar$hafsvaedi)
 tilgatuprofe
 ```
-Niðurstöður úr t-prófinu gefa að prófstærðin er $-0.42463$ og p-gildið er $0.672$. Við höfnum ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. Þá fáum við að $[-7.489194, 4.849194]$ er $95\%$ öryggisbil fyrir mismun meðaltalanna á hafsvæðunum tveimur.
+Niðurstöður úr t-prófinu gefa að prófstærðin er $-0.42463$ og p-gildið er $0.672$. Við höfnum ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. Þá fáum við að $[-7.489194, 4.849194]$ er $95\%$ öryggisbil fyrir mismun meðaltalanna á hafsvæðunum tveimur. Við athugum sérstaklega að öryggisbilið inniheldur $0$ en það stafar af því að við gátum ekki hafnað núlltilgátunni. Það er sem sagt möguleiki á því að mismunur meðaltalanna sé 0.
 
 ## f) liður
+Meðal forsenda fyrir því að tilgátuprófið að ofan (sjá e-lið) gefi heilvita niðurstöðu var að gögnin væru normaldreifð. Nú viljum við kanna að hvort sú forsenda eigi rétt á sér þ.e. hvort gögnin fylgi normaldreifingu. Teiknum stuðlarit af lengd fyrir hvert hafsvæði og teiknum inn á stuðlaritin (í rauðum lit) þéttleikafall þeirrar normaldreifingar sem eðlilegt væri að búast við að gögnin fyrir hvert hafsvæði fylgdu.
 ```{r}
+# Skilgreinum fall sem ad tekur inn gagnavigur x og
+#   skilar gognum sem fylgja "natturulegu" normaldreifingu vigursins x
+get_normal_density <- function(x, binwidth) {
+  grid <- seq(min(x), max(x), length=100)
+  data.frame(
+    le = grid,
+    normal_curve = dnorm(grid, mean(x), sd(x)) * length(x) * binwidth
+  )
+}
+
+# Skilgreinum breytu fyrir binwidth
+BW <- 3
+
+# Buum til normaldreifd gogn fyrir hvert hafsvaedi med thvi ad
+#   beita fallinu "get_normal_density" a lengdarmaelingar sem tilheyra
+#   hverju hafsvaedi fyrir sig
+normaldens <-
+  ah %>%
+  group_by(hafsvaedi) %>%
+  do(get_normal_density(x=.$le, binwidth=BW))
+
+#Teiknum nú upp myndirnar fjórar ásamt tilsvarandi þéttleikaföllum
 ah_long = melt(ah, id.vars='hafsvaedi', measure.vars='le', value.name='le')
 
 ggplot(ah_long, aes(le)) +  geom_histogram(binwidth = 3) +
-  xlab("Meðallengd") + ylab("Fjöldi") + facet_wrap(vars(hafsvaedi)) + labs(caption = "Fjögur stuðlarit af lengd fiska fyrir hvert hafsvæði.") + theme(plot.caption = element_text(hjust = 0.5))
+   geom_line(data = normaldens, aes(x = le, y = normal_curve),color="red") + xlab("Lengd") + ylab("Fjöldi") + facet_wrap(vars(hafsvaedi)) + labs(caption = "Fjögur stuðlarit af lengd fiska fyrir hvert hafsvæði.") + theme(plot.caption = element_text(hjust = 0.5))
 ```
+Af stuðlaritunum fjórum sjáum við að hafsvæðin NV og SV eru nær því að vera normaldreifð en hafsvæðin NAu og SA sem þó falla nokkuð vel að normaldreifingu.
 
 ## g) liður
 
