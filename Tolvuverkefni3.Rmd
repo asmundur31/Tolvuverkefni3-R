@@ -114,7 +114,17 @@ fiskar <- rbind(fiskar1, fiskar2)
 ```
 
 ## e) liður
+Við athugum nú hvort marktækur munur sé á meðallengd fiska á hafsvæðunum tveimur. Ef marktækur munur er á meðallengd fiska á hafsvæðunum tveimur myndum við þurfa að hafna tilgátuprófinu:
 
+$$H_{0}: \mu_{NV} - \mu_{NAu} = 0\\
+H_{1}: \mu_{NV} - \mu_{NAu} \neq 0$$
+
+Forsendur fyrir því að tilgátuprófið gefi heilvita niðurstöðu er að gögnin séu normaldreifð og meðallengd fiska sé óháð hafsvæðunum tveimur. Framkvæmum nú t-próf með tvíhliða gagntilgátu og öryggið $1-\alpha = 0.95$.
+```{r, tilgátupróf}
+tilgatuprofe <- t.test(fiskar$le~fiskar$hafsvaedi)
+tilgatuprofe
+```
+Niðurstöður úr t-prófinu gefa að prófstærðin er $-0.42463$ og p-gildið er $0.672$. Við höfnum ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. Þá fáum við að $[-7.489194, 4.849194]$ er $95\%$ öryggisbil fyrir mismun meðaltalanna á hafsvæðunum tveimur.
 ## f) liður
 
 ## g) liður
