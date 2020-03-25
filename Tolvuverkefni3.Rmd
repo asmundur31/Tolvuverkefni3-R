@@ -15,6 +15,7 @@ library(lubridate)
 library(ggplot2)
 library(kableExtra)
 library(tidyr)
+library(reshape2)
 ```
 
 ## a) liður
@@ -125,7 +126,14 @@ tilgatuprofe <- t.test(fiskar$le~fiskar$hafsvaedi)
 tilgatuprofe
 ```
 Niðurstöður úr t-prófinu gefa að prófstærðin er $-0.42463$ og p-gildið er $0.672$. Við höfnum ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. Þá fáum við að $[-7.489194, 4.849194]$ er $95\%$ öryggisbil fyrir mismun meðaltalanna á hafsvæðunum tveimur.
+
 ## f) liður
+```{r}
+ah_long = melt(ah, id.vars='hafsvaedi', measure.vars='le', value.name='le')
+
+ggplot(ah_long, aes(le)) +  geom_histogram(binwidth = 3) +
+  xlab("Meðallengd") + ylab("Fjöldi") + facet_wrap(vars(hafsvaedi)) + labs(caption = "Fjögur stuðlarit af lengd fiska fyrir hvert hafsvæði.") + theme(plot.caption = element_text(hjust = 0.5))
+```
 
 ## g) liður
 
