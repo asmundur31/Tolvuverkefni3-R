@@ -127,6 +127,7 @@ Forsendur fyrir því að tilgátuprófið gefi heilvita niðurstöðu er að g�
 ```{r, tilgátupróf}
 tilgatuprofe <- t.test(fiskar$le~fiskar$hafsvaedi)
 tilgatuprofe
+t0 <- tilgatuprofe$statistic
 ```
 Niðurstöður úr t-prófinu gefa að prófstærðin er $-0.42463$ og p-gildið er $0.672$. Við höfnum ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. Þá fáum við að $[-7.489194, 4.849194]$ er $95\%$ öryggisbil fyrir mismun meðaltalanna á hafsvæðunum tveimur. Við athugum sérstaklega að öryggisbilið inniheldur $0$ en það stafar af því að við gátum ekki hafnað núlltilgátunni. Það er sem sagt möguleiki á því að mismunur meðaltalanna sé 0.
 
@@ -163,6 +164,21 @@ ggplot(ah_long, aes(le)) +  geom_histogram(binwidth = 3) +
 Af stuðlaritunum fjórum sjáum við að hafsvæðin NV og SV eru nær því að vera normaldreifð en hafsvæðin NAu og SA sem þó falla nokkuð vel að normaldreifingu.
 
 ## g) liður
+```{r, slembivalsstærð}
+#Finnum ný t-gildi
+xyind <- c(rep(1,50),rep(2,50))
+g <- replicate(5000, t.test(fiskar$le[sample(1:length(fiskar$le))]~xyind)$statistic)
+#Teljum hve oft nýja t-gildið er tölulega stærra en upphaflega t-gildið
+count <- 0
+for (i in 1:5000)
+  if(g[i]>t0)
+    count <- count +1
+#Finnum p-gildi prófsins
+p <- count/5000
+p
+```
+Við fáum sem sagt að p-gildi slembivalsstærðarinnar er $p = 0.6598$. Í e-lið fékkst p-gildið $p = 0.672$ úr t-prófinu og því ekki um mikinn mun að ræða. Líkt og í e-lið þá höfnum við ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha = 0.05$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. 
+
 
 ## h) liður
 
