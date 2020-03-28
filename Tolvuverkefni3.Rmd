@@ -93,8 +93,7 @@ taflac
 ```
 
 ```{r, Kassarit sem sýnir lengd fiska eftir aldri}
-  ah$aldur <- factor(ah$aldur)
-  ggplot(ah,aes(x = aldur, y = le)) + labs(
+  ggplot(ah,aes(x = factor(aldur), y = le)) + labs(
         x = "Aldur",
         y = "Lengd"
     ) +
@@ -175,7 +174,6 @@ for (i in 1:5000)
     count <- count +1
 #Finnum p-gildi prófsins
 p <- count/5000
-p
 ```
 Við fáum sem sagt að p-gildi slembivalsstærðarinnar er $p = 0.6598$. Í e-lið fékkst p-gildið $p = 0.672$ úr t-prófinu og því ekki um mikinn mun að ræða. Líkt og í e-lið þá höfnum við ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha = 0.05$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. 
 
@@ -223,22 +221,24 @@ ggplot(fiskar1, aes(x=le, y=osl)) + geom_point() + labs(
   geom_line(data = gogn_likan, aes(x, y),color = "red")
 ```
 ## k) liður
-Teiknum kasssarit sem sýnir lengd á móti aldri fyrir hafsvæðið NV
-```{r, kassarit lengd á móti aldri fyrir hafsvæðið NV}
+Teiknum kasssarit sem sýnir lengd á móti aldri fyrir hafsvæðið NAu
+```{r, kassarit lengd á móti aldri fyrir hafsvæðið NAu}
 #Teiknum kasssarit sem sýnir lengd á móti aldri
- ah$aldur <- factor(ah$aldur)
-  ggplot(fiskar1,aes(x = aldur, y = le)) + labs(
+ggplot(data = fiskar2,aes(x = factor(aldur), y = le)) + geom_boxplot() + labs(
         x = "Aldur",
         y = "Lengd"
-    ) +
-    geom_boxplot()
+    )
 ```
 Smíðum nú tvenn líkön. Annars vegar líkan sem leggur beina línu í gegnum gögnin og síðan frjálst líkan með aldurinn sem flokkabreytu.
 ```{r, tvenns konar líkön borin saman}
-litid <- lm(le~aldur, data=fiskar1)
-stort <- lm(le~factor(aldur), data=fiskar1)
+litid <- lm(le~aldur, data=fiskar2)
+stort <- lm(le~factor(aldur), data=fiskar2)
 anova(litid, stort)
 ```
+Við sjáum af kassaritinu að ofan að almennt fer lengd fiska vaxandi með hækkandi aldri. Dreifni í lengd innan mismunandi aldurshópa er nokkurn veginn jöfn fyrir aldurshópana $4, 5$ og $6$ en minni fyrir þá aldurshópa eldri fiska enda um mun færri fiska í hverjum hópi að ræða í þeim aldurshópum. Við viljum athuga hvort meðaltal lengda hinna mismunandi aldurshópa séu mismunandi. Af myndinni að ofan sjáum við að svo ætti líklegast að vera en við ætlum nú að athuga hvort svo sé með einþátta fervikagreiningu. Við athugum nú hvort marktækur munur, með $95\%$ marktæknikröfu, sé á meðallengd fiska eftir aldurshópum. Látum $\mu_{i}$ tákna meðaltal lengda fiska í aldurshópi $i$. Við viljum kanna tilgátuna
 
+$$H_{0}: \mu_{3} = \mu_{4} = ... = \mu_{10}\\$$
+
+Á móti gagntilgátunni $H_{1}:$ Að minsta kosti eitt meðaltal er frábrugðið hinum. Niðurstöður úr einþátta fervikagreiningunni gefa okkur p-gildið $p = 0.003151$ sem er lægra en $\alpha = 0.05$ og því höfnum við núlltilgátunni. Niðurstaðan er því sú að minnsta kosti eitt meðaltal er frábrugðið hinum.
 
 ## Bónusspurning
