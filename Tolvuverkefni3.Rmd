@@ -190,7 +190,7 @@ ggplot(fiskar1, aes(x=le, y=osl)) + geom_point() + labs(
   x = "Lengd", 
   y = "Þyngd") 
 ```
-Við sjáum að þyngd vex með lengd og virðast fylgja veldisvexti. Við getum því ályktað að þyngd aukist í hlutfalli við veldi af lengd þ.e. að til séu fastar $\alpha$ og $c$ þannig að $w = \alpha l^{c}$ þar sem $w$ er þyngd og $l$ er lengd. Það er því eðlilegt að líta á stærðirnar á log-log grafi og fá þannig línulegt samband $log(w) = clog(l)+log(\alpha)$.
+Við sjáum að þyngd vex með lengd og virðast fylgja veldisvexti. Við getum því ályktað að þyngd aukist í hlutfalli við veldi af lengd þ.e. að til séu fastar $\alpha$ og $c$ þannig að $w = \alpha l^{c}$ þar sem $w$ er þyngd og $l$ er lengd. Það er því eðlilegt að líta á stærðirnar á log-log grafi og fá þannig línulegt samband $ln(w) = cln(l)+ln(\alpha)$.
 ```{r, log-log graf þyngd sem fall af lengd}
 #Teiknum einnig mynd sem sýnir samband stærðanna á log-log grafi
 ggplot(fiskar1, aes(x=log(le), y=log(osl))) + geom_point() + labs(
@@ -206,8 +206,22 @@ summary(fit)
 Línulega aðhvarfsgreiningarlíkanið er því $w = 3.0199l - 4.7949$. Þá fáum við að skýringarhlutfallið er $R^2 = 0.983$ svo ætla má að samband frum- og fylgibreytu sé næstum línulegt og líkanið gefi traustverðuga spá um þyngd út frá lengd.
 
 ## j) liður
-
-
+Teiknum inn á myndina sem sýnir samband milli lengdar og þyngdar fiskanna bestu beinu línu ásamt bestu línu sem líkanið sem smíðað var í i-lið gefur (í rauðu).
+```{r, samanburður á línum}
+#Búum til nýjan gagnaramma sem inniheldur spábreytugildin úr líkaninu og gildi háðu breytunnar úr líkaninu
+gogn_likan <-
+  data.frame(
+    x = exp(fit$model[['log(le)']]),
+    y = exp(predict(fit))
+  )
+#Teiknum síðan myndina ásamt línunum sem við höfum áhuga á
+ggplot(fiskar1, aes(x=le, y=osl)) + geom_point() + labs(
+  title="Samband lengdar og þyngdar fiska á hafsvæðinu NV",
+  x = "Lengd", 
+  y = "Þyngd") + 
+  stat_smooth(method='lm', se=FALSE) +
+  geom_line(data = gogn_likan, aes(x, y),color = "red")
+```
 ## k) liður
 
 ## Bónusspurning
