@@ -183,8 +183,30 @@ Við fáum sem sagt að p-gildi slembivalsstærðarinnar er $p = 0.6598$. Í e-l
 ## h) liður
 
 ## i) liður
+```{r, þyngd sem fall af lengd}
+#Veljum annað hafsvæðanna úr e-lið, hér veljum við hafsvæðið NV
+ggplot(fiskar1, aes(x=le, y=osl)) + geom_point() + labs(
+  title="Samband lengdar og þyngdar fiska á hafsvæðinu NV",
+  x = "Lengd", 
+  y = "Þyngd") 
+```
+Við sjáum að þyngd vex með lengd og virðast fylgja veldisvexti. Við getum því ályktað að þyngd aukist í hlutfalli við veldi af lengd þ.e. að til séu fastar $\alpha$ og $c$ þannig að $w = \alpha l^{c}$ þar sem $w$ er þyngd og $l$ er lengd. Það er því eðlilegt að líta á stærðirnar á log-log grafi og fá þannig línulegt samband $log(w) = clog(l)+log(\alpha)$.
+```{r, log-log graf þyngd sem fall af lengd}
+#Teiknum einnig mynd sem sýnir samband stærðanna á log-log grafi
+ggplot(fiskar1, aes(x=log(le), y=log(osl))) + geom_point() + labs(
+  title="Samband lengdar og þyngdar fiska á hafsvæðinu NV á log-log grafi",
+  x = "Lengd", 
+  y = "Þyngd")
+```
+Við sjáum nú að á log-log grafi er línulegt samband milli stærðanna þ.e. logri þyngdar vex línulega sem fall af logra lengdar. Smíðum nú línulegt aðhvarfsgreiningarlíkan að punktunum en þá er eðlilegra að nota logrann af báðum breytum þar sem þær stærðir virðast fylgja nokkurn veginn línulegu sambandi.
+```{r, aðhvarfsgreiningarlíkan spáð fyrir um þyngd út frá lengd}
+fit <- lm(log(osl) ~ log(le), data = fiskar1)
+summary(fit)
+```
+Línulega aðhvarfsgreiningarlíkanið er því $w = 3.0199l - 4.7949$. Þá fáum við að skýringarhlutfallið er $R^2 = 0.983$ svo ætla má að samband frum- og fylgibreytu sé næstum línulegt og líkanið gefi traustverðuga spá um þyngd út frá lengd.
 
 ## j) liður
+
 
 ## k) liður
 
