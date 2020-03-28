@@ -223,5 +223,22 @@ ggplot(fiskar1, aes(x=le, y=osl)) + geom_point() + labs(
   geom_line(data = gogn_likan, aes(x, y),color = "red")
 ```
 ## k) liður
+Teiknum kasssarit sem sýnir lengd á móti aldri fyrir hafsvæðið NV
+```{r, kassarit lengd á móti aldri fyrir hafsvæðið NV}
+#Teiknum kasssarit sem sýnir lengd á móti aldri
+ ah$aldur <- factor(ah$aldur)
+  ggplot(fiskar1,aes(x = aldur, y = le)) + labs(
+        x = "Aldur",
+        y = "Lengd"
+    ) +
+    geom_boxplot()
+```
+Smíðum nú tvenn líkön. Annars vegar líkan sem leggur beina línu í gegnum gögnin og síðan frjálst líkan með aldurinn sem flokkabreytu.
+```{r, tvenns konar líkön borin saman}
+litid <- lm(le~aldur, data=fiskar1)
+stort <- lm(le~factor(aldur), data=fiskar1)
+anova(litid, stort)
+```
+
 
 ## Bónusspurning
