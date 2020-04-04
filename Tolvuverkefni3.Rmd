@@ -93,8 +93,7 @@ taflac
 ```
 
 ```{r, Kassarit sem sýnir lengd fiska eftir aldri}
-  ah$aldur <- factor(ah$aldur)
-  ggplot(ah,aes(x = aldur, y = le)) + labs(
+  ggplot(ah,aes(x = factor(aldur), y = le)) + labs(
         x = "Aldur",
         y = "Lengd"
     ) +
@@ -128,6 +127,7 @@ Forsendur fyrir því að tilgátuprófið gefi heilvita niðurstöðu er að g�
 ```{r, tilgátupróf}
 tilgatuprofe <- t.test(fiskar$le~fiskar$hafsvaedi)
 tilgatuprofe
+t0 <- tilgatuprofe$statistic
 ```
 Niðurstöður úr t-prófinu gefa að prófstærðin er $-0.42463$ og p-gildið er $0.672$. Við höfnum ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. Þá fáum við að $[-7.489194, 4.849194]$ er $95\%$ öryggisbil fyrir mismun meðaltalanna á hafsvæðunum tveimur. Við athugum sérstaklega að öryggisbilið inniheldur $0$ en það stafar af því að við gátum ekki hafnað núlltilgátunni. Það er sem sagt möguleiki á því að mismunur meðaltalanna sé 0.
 
@@ -164,13 +164,82 @@ ggplot(ah_long, aes(le)) +  geom_histogram(binwidth = 3) +
 Af stuðlaritunum fjórum sjáum við að hafsvæðin NV og SV eru nær því að vera normaldreifð en hafsvæðin NAu og SA sem þó falla nokkuð vel að normaldreifingu.
 
 ## g) liður
+```{r, slembivalsstærð}
+#Finnum ný t-gildi
+xyind <- c(rep(1,50),rep(2,50))
+g <- replicate(5000, t.test(fiskar$le[sample(1:length(fiskar$le))]~xyind)$statistic)
+#Teljum hve oft nýja t-gildið er tölulega stærra en upphaflega t-gildið
+count <- 0
+for (i in 1:5000)
+  if(g[i]>t0)
+    count <- count +1
+#Finnum p-gildi prófsins
+p <- count/5000
+```
+Við fáum sem sagt að p-gildi slembivalsstærðarinnar er $p = 0.6598$. Í e-lið fékkst p-gildið $p = 0.672$ úr t-prófinu og því ekki um mikinn mun að ræða. Líkt og í e-lið þá höfnum við ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha = 0.05$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. 
+
 
 ## h) liður
 
 ## i) liður
+```{r, þyngd sem fall af lengd}
+#Veljum annað hafsvæðanna úr e-lið, hér veljum við hafsvæðið NV
+ggplot(fiskar1, aes(x=le, y=osl)) + geom_point() + labs(
+  title="Samband lengdar og þyngdar fiska á hafsvæðinu NV",
+  x = "Lengd", 
+  y = "Þyngd") 
+```
+Við sjáum að þyngd vex með lengd og virðast fylgja veldisvexti. Við getum því ályktað að þyngd aukist í hlutfalli við veldi af lengd þ.e. að til séu fastar $\alpha$ og $c$ þannig að $w = \alpha l^{c}$ þar sem $w$ er þyngd og $l$ er lengd. Það er því eðlilegt að líta á stærðirnar á log-log grafi og fá þannig línulegt samband $ln(w) = cln(l)+ln(\alpha)$.
+```{r, log-log graf þyngd sem fall af lengd}
+#Teiknum einnig mynd sem sýnir samband stærðanna á log-log grafi
+ggplot(fiskar1, aes(x=log(le), y=log(osl))) + geom_point() + labs(
+  title="Samband lengdar og þyngdar fiska á hafsvæðinu NV á log-log grafi",
+  x = "Lengd", 
+  y = "Þyngd")
+```
+Við sjáum nú að á log-log grafi er línulegt samband milli stærðanna þ.e. logri þyngdar vex línulega sem fall af logra lengdar. Smíðum nú línulegt aðhvarfsgreiningarlíkan að punktunum en þá er eðlilegra að nota logrann af báðum breytum þar sem þær stærðir virðast fylgja nokkurn veginn línulegu sambandi.
+```{r, aðhvarfsgreiningarlíkan spáð fyrir um þyngd út frá lengd}
+fit <- lm(log(osl) ~ log(le), data = fiskar1)
+summary(fit)
+```
+Línulega aðhvarfsgreiningarlíkanið er því $w = 3.0199l - 4.7949$. Þá fáum við að skýringarhlutfallið er $R^2 = 0.983$ svo ætla má að samband frum- og fylgibreytu sé næstum línulegt og líkanið gefi traustverðuga spá um þyngd út frá lengd.
 
 ## j) liður
-
+Teiknum inn á myndina sem sýnir samband milli lengdar og þyngdar fiskanna bestu beinu línu ásamt bestu línu sem líkanið sem smíðað var í i-lið gefur (í rauðu).
+```{r, samanburður á línum}
+#Búum til nýjan gagnaramma sem inniheldur spábreytugildin úr líkaninu og gildi háðu breytunnar úr líkaninu
+gogn_likan <-
+  data.frame(
+    x = exp(fit$model[['log(le)']]),
+    y = exp(predict(fit))
+  )
+#Teiknum síðan myndina ásamt línunum sem við höfum áhuga á
+ggplot(fiskar1, aes(x=le, y=osl)) + geom_point() + labs(
+  title="Samband lengdar og þyngdar fiska á hafsvæðinu NV",
+  x = "Lengd", 
+  y = "Þyngd") + 
+  stat_smooth(method='lm', se=FALSE) +
+  geom_line(data = gogn_likan, aes(x, y),color = "red")
+```
 ## k) liður
+Teiknum kasssarit sem sýnir lengd á móti aldri fyrir hafsvæðið NAu
+```{r, kassarit lengd á móti aldri fyrir hafsvæðið NAu}
+#Teiknum kasssarit sem sýnir lengd á móti aldri
+ggplot(data = fiskar2,aes(x = factor(aldur), y = le)) + geom_boxplot() + labs(
+        x = "Aldur",
+        y = "Lengd"
+    )
+```
+Smíðum nú tvenn líkön. Annars vegar líkan sem leggur beina línu í gegnum gögnin og síðan frjálst líkan með aldurinn sem flokkabreytu.
+```{r, tvenns konar líkön borin saman}
+litid <- lm(le~aldur, data=fiskar2)
+stort <- lm(le~factor(aldur), data=fiskar2)
+anova(litid, stort)
+```
+Við sjáum af kassaritinu að ofan að almennt fer lengd fiska vaxandi með hækkandi aldri. Dreifni í lengd innan mismunandi aldurshópa er nokkurn veginn jöfn fyrir aldurshópana $4, 5$ og $6$ en minni fyrir þá aldurshópa eldri fiska enda um mun færri fiska í hverjum hópi að ræða í þeim aldurshópum. Við viljum athuga hvort meðaltal lengda hinna mismunandi aldurshópa séu mismunandi. Af myndinni að ofan sjáum við að svo ætti líklegast að vera en við ætlum nú að athuga hvort svo sé með einþátta fervikagreiningu. Við athugum nú hvort marktækur munur, með $95\%$ marktæknikröfu, sé á meðallengd fiska eftir aldurshópum. Látum $\mu_{i}$ tákna meðaltal lengda fiska í aldurshópi $i$. Við viljum kanna tilgátuna
+
+$$H_{0}: \mu_{3} = \mu_{4} = ... = \mu_{10}\\$$
+
+Á móti gagntilgátunni $H_{1}:$ Að minsta kosti eitt meðaltal er frábrugðið hinum. Niðurstöður úr einþátta fervikagreiningunni gefa okkur p-gildið $p = 0.003151$ sem er lægra en $\alpha = 0.05$ og því höfnum við núlltilgátunni. Niðurstaðan er því sú að minnsta kosti eitt meðaltal er frábrugðið hinum.
 
 ## Bónusspurning
