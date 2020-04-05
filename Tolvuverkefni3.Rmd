@@ -102,7 +102,8 @@ taflac
     ) +
     geom_boxplot()
 ```
-##!!!!!!!!!!!!Hér vantar að svara spurningum úr c lið!!!!!!!!!!!!!!!!!!!!
+
+Nokkuð er um útlaga og þá sérstaklega í aldurshópununm fyrir miðju kassaritsins þ.e. meðal þriggja til átta ára fiska. Kassarit hentar vel til að bera kennsl á útlaga og meta dreifingu gagna. Kassarit geta hentað vel þegar setja á fram gagnasöfn þar sem mikið af gildum eru í hverjum flokki myndrænt því þau sýna ekki alla gagnapunkta heldur leggja áherslu á hver dreifing gagnanna er þess í stað. Framsetningin að ofan þar sem litið var á aldur sem samfellda breytu hefur einnig kosti þó erfiðara sé að greina útlaga á þeirri mynd því þar eru leitast við að sýna alla gagnapunkta. Sú mynd gefur skýrari niðurstöður fyrir þá flokka sem innihalda tiltölulega fáa gagnapunkta og kann að henta betur fyrir gagnasöfn þar sem hver flokkur hefur tiltölulega fáa gagnapunkta. 
 
 ## d) liður
 ```{r, Tvö hafsvæði valin á slembin hátt, gerum töflu með 50 fiskum af hvoru gefnu hafsvæði}
@@ -133,7 +134,7 @@ tilgatuprofe <- t.test(fiskar$le~fiskar$hafsvaedi)
 tilgatuprofe
 t0 <- tilgatuprofe$statistic
 ```
-Niðurstöður úr t-prófinu gefa að prófstærðin er $-0.42463$ og p-gildið er $0.672$. Við höfnum ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. Þá fáum við að $[-7.489194, 4.849194]$ er $95\%$ öryggisbil fyrir mismun meðaltalanna á hafsvæðunum tveimur. Við athugum sérstaklega að öryggisbilið inniheldur $0$ en það stafar af því að við gátum ekki hafnað núlltilgátunni. Það er sem sagt möguleiki á því að mismunur meðaltalanna sé 0.
+Niðurstöður úr t-prófinu gefa að prófstærðin er $-0.42463$ og p-gildið er $0.672$. Við höfnum ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. Þá fáum við að $[-7.489194, 4.849194]$ er $95\%$ öryggisbil fyrir mismun meðaltalanna á hafsvæðunum tveimur. Við athugum sérstaklega að öryggisbilið inniheldur $0$ en það stafar af því að við getum ekki hafnað núlltilgátunni. Það er sem sagt möguleiki á því að mismunur meðaltalanna sé 0.
 
 ## f) liður
 Meðal forsenda fyrir því að tilgátuprófið að ofan (sjá e-lið) gefi heilvita niðurstöðu var að gögnin væru normaldreifð. Nú viljum við kanna að hvort sú forsenda eigi rétt á sér þ.e. hvort gögnin fylgi normaldreifingu. Teiknum stuðlarit af lengd fyrir hvert hafsvæði og teiknum inn á stuðlaritin (í rauðum lit) þéttleikafall þeirrar normaldreifingar sem eðlilegt væri að búast við að gögnin fyrir hvert hafsvæði fylgdu.
@@ -184,6 +185,26 @@ Við fáum sem sagt að p-gildi slembivalsstærðarinnar er $p = 0.6598$. Í e-l
 
 
 ## h) liður
+Eftirfarandi tafla sýnir fjölda kynþroska og ókynþroska fiska á hvoru hafsvæði
+
+```{r,  Tafla sýnir fjölda kynþroska og ókynþroska fiska á hvoru hafsvæði}
+fiskar$hafsvaedi <- droplevels(fiskar$hafsvaedi)
+taflah <- fiskar %>%
+  group_by("Hafsvæði" = hafsvaedi,kt2) %>%
+  count(kt2, name="Fjöldi")
+taflah
+```
+Við athugum nú hvort marktækur munur sé á hlutfalli kynþroska fiska á hafsvæðunum tveimur, $ \rho_{NV}$ og $\rho_{NAu}$. Ef marktækur munur er á hlutfalli kynþroska fiska á hafsvæðunum tveimur myndum við þurfa að hafna tilgátuprófinu:
+
+$$H_{0}: p_{NV} = p_{NAu}\\
+H_{1}: p_{NV} \neq p_{NAu}$$
+
+Framkvæmum nú próf fyrir $p$ í tvíkostadreifingu með tvíhliða gagntilgátu og marktæknikröfu $1-\alpha = 0.95$.
+```{r, tilgátupróf}
+tilgatuprofh <- prop.test(table(fiskar$hafsvaedi, fiskar$kt2))
+tilgatuprofh
+```
+Niðurstöður úr prófinu gefa að prófstærðin er $0$ og p-gildið er $1$. Við höfnum ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha$. Það er því ekki marktækur munur á fjölda kynþroska fiska á hafsvæðunum tveimur. Þá fáum við að $[-0.1796337, 0.1796337]$ er $95\%$ öryggisbil fyrir fjölda kynþroska fiska á hafsvæðunum tveimur. Við sjáum að matið sjálft á hlutfalli kynþroska fiska á hafsvæðunum tveimur er $0.3$ fyrir hvort hafsvæði. Við athugum sérstaklega að öryggisbilið inniheldur $0$ en það stafar af því að við getum ekki hafnað núlltilgátunni. Það er sem sagt möguleiki á því að mismunur meðaltalanna sé 0.
 
 ## i) liður
 ```{r, þyngd sem fall af lengd}
@@ -249,19 +270,30 @@ $$H_{0}: \mu_{3} = \mu_{4} = ... = \mu_{10}\\$$
 
 ## Bónusspurning
 
-
 ```{r}
 Iceland <- map_data("world", region = "Iceland")
+xlim <- c(-28, -10)
+ylim <- c(62.5, 67.5)
+library(marmap)
 depth <- 
   getNOAA.bathy(lon1 = xlim[1], lon2 = xlim[2],
                 lat1 = ylim[1], lat2 = ylim[2],
                 resolution = 1) %>% 
   fortify()
-ggplot() + 
+kort <- ggplot() +
   geom_contour(data = depth, aes(x, y, z = z),
                breaks=c(-25, -50, -100, -200, -400),
                colour="black", size=0.1) + 
-  geom_polygon(data=Iceland, aes(x=long, y=lat, group=group), fill="blue") + 
+  geom_polygon(data=Iceland, aes(x=long, y=lat, group=group), color="black", fill="blue") + 
   coord_quickmap()
+kort
+```
+
+```{r, tilkynningarskildureitir}
+reitir <- filter(ah, hafsvaedi == "NV" | hafsvaedi =="NAu")$reit
+x<-r2d(reitir)$lon
+y<-r2d(reitir)$lat
+kort + plot(x,y,type = 'n') # Teikna mynd af hafsvæðum
+text(x,y,as.character(reitir))
 ```
 
