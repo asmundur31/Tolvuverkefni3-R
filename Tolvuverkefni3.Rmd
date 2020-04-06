@@ -290,17 +290,24 @@ kort <- ggplot() +
 kort
 ```
 
-Bætum síðan inn tilkynningarskyldureitunum frá okkar hafssvæði:
+Bætum síðan inn tilkynningarskyldureitunum frá okkar hafssvæðum:
 
 ```{r, tilkynningarskildureitir}
+colorNV <- filter(ah, hafsvaedi == "NV")$hafsvaedi
+colorNAu <- filter(ah, hafsvaedi =="NAu")$hafsvaedi
+
 reitirNV <- filter(ah, hafsvaedi == "NV")$reit
 reitirNAu <- filter(ah, hafsvaedi =="NAu")$reit
+
 xNV <- r2d(reitirNV)$lon
 xNAu <- r2d(reitirNAu)$lon
+
 yNV <- r2d(reitirNV)$lat
 yNAu <- r2d(reitirNAu)$lat
+
 kort +
-  geom_label(aes(x=xNV, y=yNV, label=as.character(reitirNV)), size=2, fill="green") +
-  geom_label(aes(x=xNAu, y=yNAu, label=as.character(reitirNAu)), size=2, fill="pink")
+  geom_label(aes(x=xNV, y=yNV, label=as.character(reitirNV), fill="NV"), size=2) +
+  geom_label(aes(x=xNAu, y=yNAu, label=as.character(reitirNAu), fill="NAu"), size=2) +
+  labs(fill="Hafsvæði")
 ```
 
