@@ -285,15 +285,22 @@ kort <- ggplot() +
                breaks=c(-25, -50, -100, -200, -400),
                colour="black", size=0.1) + 
   geom_polygon(data=Iceland, aes(x=long, y=lat, group=group), color="black", fill="blue") + 
-  coord_quickmap()
+  coord_quickmap(xlim = xlim, ylim = ylim) +
+  xlab("Lengdargráða") + ylab("Breiddargráða")
 kort
 ```
 
+Bætum síðan inn tilkynningarskyldureitunum frá okkar hafssvæði:
+
 ```{r, tilkynningarskildureitir}
-reitir <- filter(ah, hafsvaedi == "NV" | hafsvaedi =="NAu")$reit
-x<-r2d(reitir)$lon
-y<-r2d(reitir)$lat
-kort + plot(x,y,type = 'n') # Teikna mynd af hafsvæðum
-text(x,y,as.character(reitir))
+reitirNV <- filter(ah, hafsvaedi == "NV")$reit
+reitirNAu <- filter(ah, hafsvaedi =="NAu")$reit
+xNV <- r2d(reitirNV)$lon
+xNAu <- r2d(reitirNAu)$lon
+yNV <- r2d(reitirNV)$lat
+yNAu <- r2d(reitirNAu)$lat
+kort +
+  geom_label(aes(x=xNV, y=yNV, label=as.character(reitirNV)), size=2, fill="green") +
+  geom_label(aes(x=xNAu, y=yNAu, label=as.character(reitirNAu)), size=2, fill="pink")
 ```
 
