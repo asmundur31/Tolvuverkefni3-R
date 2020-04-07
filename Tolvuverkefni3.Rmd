@@ -39,17 +39,23 @@ function(r)
 	lat <- lat + 60 + halfb + 0.25
 	data.frame(lat = lat, lon = lon)
 }
+
 latitude<- r2d(ah$reit)$lat
 longtitude <- r2d(ah$reit)$lon
-hafsvaedi <- ifelse(latitude < 65, 
-                    ifelse(longtitude < -19, "SV","SA"),
-                    ifelse(longtitude < -19, "NV","NAu")
-                    )
+
+hafsvaedi <- ifelse(
+               latitude < 65,
+               ifelse(longtitude < -19, "SV","SA"),
+               ifelse(longtitude < -19, "NV","NAu")
+             )
+
 kt2 <- ifelse(ah$kt == 1, "Ókynþroska", "Kynþroska")
+
 ah <- ah %>%
-  mutate(hafsvaedi = factor(hafsvaedi), 
-         kt2 = factor(kt2)
-         )
+  mutate(
+    hafsvaedi = factor(hafsvaedi), 
+    kt2 = factor(kt2)
+  )
 ```
 
 
@@ -59,6 +65,7 @@ Fáum töflu sem sýnir fjölda fiska af hvoru kynþroskastigi eftir hafsvæðum
 taflab <- ah %>%
   group_by("Hafsvæði" = hafsvaedi, "Þroskastig" = kt2) %>%
   count(name = "Fjöldi")
+
 taflab %>%
   kable(align = "lll", caption="Tafla 1: Sýnir fjölda fiska af hvoru kynþroskastigi eftir hafsvæðum.") %>%
   kable_styling(position = "center")
@@ -68,11 +75,14 @@ Búum svo til aðra töflu þar sem við bætum við kynþroskahlutfalli á hver
 ```{r, tafla sem sýnir kynþroskahlutfall á hverju hafsvæði}
 c <- vector()
 f <- vector()
+
 for (i in 1:4)
   c[i] = taflab$Fjöldi[2*i-1]+taflab$Fjöldi[2*i]
 for (i in 1:8)
   f[i] = taflab$Fjöldi[i]/c[ceiling(i/2)]
+
 taflab[ , "Hlutfall"] <- f
+
 taflab %>%
   kable(align = "llll", caption="Tafla 2: Sýnir fjölda og hlutfall fiska af hvoru kynþroskastigi eftir hafsvæðum.") %>%
   kable_styling(position = "center")
@@ -83,10 +93,10 @@ Teiknum loks mynd sem sýnir fjölda fiska af hvoru kynþroskastigi í hverjum f
 ggplot(ah, aes(hafsvaedi, fill=kt2)) + 
   geom_bar(position='dodge') + 
   labs(
-        title = "Fjöldi fiska af hvoru kynþroskastigi í hverjum flokki af hafsvæðunum fjórum",
-        x = "Hafsvæði",
-        y = "Fjöldi"
-        ) +
+    title = "Fjöldi fiska af hvoru kynþroskastigi í hverjum flokki af hafsvæðunum fjórum",
+    x = "Hafsvæði",
+    y = "Fjöldi"
+  ) +
   labs(fill = "Þroskastig", Position = "center") +
   theme(plot.caption.position = "plot")
 ```
@@ -96,10 +106,13 @@ Sýnum töflu með fjölda fiska, meðallengd, meðalþyngd og staðalfrávik le
 ```{r, tafla sem sýnir fjölda fiska, meðallengd, meðalþyngd og staðalfrávik lengdar eftir aldri}
 taflac <- ah %>%
   group_by("Aldur" = aldur) %>%
-  summarise("Fjöldi fiska" = length(aldur),
-            "Meðallengd" = mean(le),
-            "Meðalþyngd" =mean(osl),
-            "Staðalfrávik lengdar" = sd(le))
+  summarise(
+    "Fjöldi fiska" = length(aldur),
+    "Meðallengd" = mean(le),
+    "Meðalþyngd" =mean(osl),
+    "Staðalfrávik lengdar" = sd(le)
+  )
+
 taflac %>%
   kable(align = "lllll", caption="Tafla 3: Tafla sem sýnir fjölda fiska, meðallengd, meðalþyngd og staðalfrávik lengdar eftir aldri.") %>%
   kable_styling(position = "center")
@@ -109,24 +122,24 @@ taflac %>%
 
 Teikum næst mynd sem sýnir lengd fiska eftir aldri þegar litið er á aldur sem samfellda breytu ásamt meðallengd fiska fyrir hvern aldurshóp sem stærri rauða punkta.
 ```{r, Mynd sem sýnir lengd fiska eftir aldri}
-  ggplot(ah, aes(x = aldur, y = le)) +
-    labs(
-        title = "Graf sem sýnir lengd fiska eftir aldri þar sem aldur er samfelld breyta",
-        x = "Aldur",
-        y = "Lengd"
-        ) +
-    geom_point(color = 1, size = 2) +
-    geom_point(aes(x = Aldur, y = Meðallengd),taflac, color = 2, size = 3)
+ggplot(ah, aes(x = aldur, y = le)) +
+  labs(
+    title = "Graf sem sýnir lengd fiska eftir aldri þar sem aldur er samfelld breyta",
+    x = "Aldur",
+    y = "Lengd"
+  ) +
+  geom_point(color = 1, size = 2) +
+  geom_point(aes(x = Aldur, y = Meðallengd),taflac, color = 2, size = 3)
 ```
 
 Teiknum svo einnig kassarit sem sýnir lengd fiska eftir aldri þegar litið er á aldur sem strjála breytu.
 ```{r, Kassarit sem sýnir lengd fiska eftir aldri}
-  ggplot(ah,aes(x = factor(aldur), y = le)) +
+ggplot(ah,aes(x = factor(aldur), y = le)) +
   labs(
-      title = "Graf sem sýnir lengd fiska eftir aldri þar sem aldur er strjál breyta",
-      x = "Aldur",
-      y = "Lengd"
-      ) +
+    title = "Graf sem sýnir lengd fiska eftir aldri þar sem aldur er strjál breyta",
+    x = "Aldur",
+    y = "Lengd"
+  ) +
   geom_boxplot()
 ```
 
@@ -145,10 +158,13 @@ Veljum nú af handahófi 50 fiska af hvoru hafsvæði og sameinum svo fiskana í
 ```{r, Tafla með 50 fiskum af hvoru gefnu hafsvæði}
 hafsvaedi1 <- filter(ah, hafsvaedi == "NV")
 hafsvaedi2 <- filter(ah, hafsvaedi == "NAu")
+
 set.seed(3110)
 fiskar1 <- sample_n(hafsvaedi1, 50, replace = F)
+
 set.seed(3110)
 fiskar2 <- sample_n(hafsvaedi2, 50, replace = F)
+
 fiskar <- rbind(fiskar1, fiskar2)
 fiskar # ATHUGA HVORT VIÐ VILJUM SÝNA TÖFLUNA
 ```
@@ -195,8 +211,14 @@ normaldens <-
 #Teiknum nú upp myndirnar fjórar ásamt tilsvarandi þéttleikaföllum
 ah_long = melt(ah, id.vars='hafsvaedi', measure.vars='le', value.name='le')
 
-ggplot(ah_long, aes(le)) +  geom_histogram(binwidth = 3) +
-   geom_line(data = normaldens, aes(x = le, y = normal_curve),color="red") + xlab("Lengd") + ylab("Fjöldi") + facet_wrap(vars(hafsvaedi)) + labs(caption = "Mynd 2: Fjögur stuðlarit af lengd fiska fyrir hvert hafsvæði.") + theme(plot.caption = element_text(hjust = 0.5))
+ggplot(ah_long, aes(le)) +
+  geom_histogram(binwidth = 3) +
+  geom_line(data = normaldens, aes(x = le, y = normal_curve),color="red") +
+  xlab("Lengd") +
+  ylab("Fjöldi") + 
+  facet_wrap(vars(hafsvaedi)) + 
+  labs(title = "Mynd 2: Fjögur stuðlarit af lengd fiska fyrir hvert hafsvæði.") +
+  theme(plot.caption = element_text(hjust = 0.5))
 ```
 
 Af stuðlaritunum fjórum sjáum við að hafsvæðin NV og SV eru nær því að vera normaldreifð en hafsvæðin NAu og SA sem þó falla nokkuð vel að normaldreifingu.
@@ -223,9 +245,11 @@ Eftirfarandi tafla sýnir fjölda kynþroska og ókynþroska fiska á hvoru hafs
 
 ```{r,  Tafla sýnir fjölda kynþroska og ókynþroska fiska á hvoru hafsvæði}
 fiskar$hafsvaedi <- droplevels(fiskar$hafsvaedi)
+
 taflah <- fiskar %>%
   group_by("Hafsvæði" = hafsvaedi,"Þroskastig" = kt2) %>%
   count(name="Fjöldi")
+
 taflah %>%
   kable(align = "lll", caption="Tafla 4: Tafla yfir fjölda kynþroska og ókynþroska fiska á hvoru hafsvæði.") %>%
   kable_styling(position = "center")
@@ -247,19 +271,25 @@ Niðurstöður úr prófinu gefa að prófstærðin er $0$ og p-gildið er $1$. 
 ## i) liður
 ```{r, þyngd sem fall af lengd}
 #Veljum annað hafsvæðanna úr e-lið, hér veljum við hafsvæðið NV
-ggplot(fiskar1, aes(x=le, y=osl)) + geom_point() + labs(
-  title="Samband lengdar og þyngdar fiska á hafsvæðinu NV",
-  x = "Lengd", 
-  y = "Þyngd") 
+ggplot(fiskar1, aes(x=le, y=osl)) +
+  geom_point() +
+  labs(
+    title="Samband lengdar og þyngdar fiska á hafsvæðinu NV",
+    x = "Lengd", 
+    y = "Þyngd"
+  ) 
 ```
 
 Við sjáum að þyngd vex með lengd og virðast fylgja veldisvexti. Við getum því ályktað að þyngd aukist í hlutfalli við veldi af lengd þ.e. að til séu fastar $\alpha$ og $c$ þannig að $w = \alpha l^{c}$ þar sem $w$ er þyngd og $l$ er lengd. Það er því eðlilegt að líta á stærðirnar á log-log grafi og fá þannig línulegt samband $ln(w) = cln(l)+ln(\alpha)$.
 ```{r, log-log graf þyngd sem fall af lengd}
 #Teiknum einnig mynd sem sýnir samband stærðanna á log-log grafi
-ggplot(fiskar1, aes(x=log(le), y=log(osl))) + geom_point() + labs(
-  title="Samband lengdar og þyngdar fiska á hafsvæðinu NV á log-log grafi",
-  x = "Lengd", 
-  y = "Þyngd")
+ggplot(fiskar1, aes(x=log(le), y=log(osl))) +
+  geom_point() +
+  labs(
+    title="Samband lengdar og þyngdar fiska á hafsvæðinu NV á log-log grafi",
+    x = "Lengd", 
+    y = "Þyngd"
+  )
 ```
 
 Við sjáum nú að á log-log grafi er línulegt samband milli stærðanna þ.e. logri þyngdar vex línulega sem fall af logra lengdar. Smíðum nú línulegt aðhvarfsgreiningarlíkan að punktunum en þá er eðlilegra að nota logrann af báðum breytum þar sem þær stærðir virðast fylgja nokkurn veginn línulegu sambandi.
@@ -280,10 +310,13 @@ gogn_likan <-
     y = exp(predict(fit))
   )
 #Teiknum síðan myndina ásamt línunum sem við höfum áhuga á
-ggplot(fiskar1, aes(x=le, y=osl)) + geom_point() + labs(
-  title="Samband lengdar og þyngdar fiska á hafsvæðinu NV",
-  x = "Lengd", 
-  y = "Þyngd") + 
+ggplot(fiskar1, aes(x=le, y=osl)) +
+  geom_point() +
+  labs(
+    title="Samband lengdar og þyngdar fiska á hafsvæðinu NV",
+    x = "Lengd", 
+    y = "Þyngd"
+  ) + 
   stat_smooth(method='lm', se=FALSE) +
   geom_line(data = gogn_likan, aes(x, y),color = "red")
 ```
@@ -292,10 +325,13 @@ ggplot(fiskar1, aes(x=le, y=osl)) + geom_point() + labs(
 Teiknum kasssarit sem sýnir lengd á móti aldri fyrir hafsvæðið NAu
 ```{r, kassarit lengd á móti aldri fyrir hafsvæðið NAu}
 #Teiknum kasssarit sem sýnir lengd á móti aldri
-ggplot(data = fiskar2,aes(x = factor(aldur), y = le)) + geom_boxplot() + labs(
-        x = "Aldur",
-        y = "Lengd"
-    )
+ggplot(data = fiskar2,aes(x = factor(aldur), y = le)) +
+  geom_boxplot() +
+  labs(
+    tiltle="Kassarit sem sýnir lengd á móti aldri fyrir hafsvæðið NAu",
+    x = "Aldur",
+    y = "Lengd"
+  )
 ```
 
 Smíðum nú tvenn líkön. Annars vegar líkan sem leggur beina línu í gegnum gögnin og síðan frjálst líkan með aldurinn sem flokkabreytu.
@@ -315,22 +351,35 @@ $$H_{0}: \mu_{3} = \mu_{4} = ... = \mu_{10}\\$$
 
 ```{r}
 Iceland <- map_data("world", region = "Iceland")
+
 xlim <- c(-28, -10)
 ylim <- c(62.5, 67.5)
+
 library(marmap)
+
 depth <- 
-  getNOAA.bathy(lon1 = xlim[1], lon2 = xlim[2],
-                lat1 = ylim[1], lat2 = ylim[2],
-                resolution = 1) %>% 
+  getNOAA.bathy(
+    lon1 = xlim[1], lon2 = xlim[2],
+    lat1 = ylim[1], lat2 = ylim[2],
+    resolution = 1
+  ) %>% 
   fortify()
+
 kort <- ggplot() +
-  geom_contour(data = depth, aes(x, y, z = z),
-               breaks=c(-25, -50, -100, -200, -400),
-               colour="black", size=0.1) + 
-  geom_polygon(data=Iceland, aes(x=long, y=lat, group=group), color="black", fill="blue") + 
+  geom_contour(
+    data = depth, aes(x, y, z = z),
+    breaks=c(-25, -50, -100, -200, -400),
+    colour="black", size=0.1
+  ) + 
+  geom_polygon(
+    data=Iceland,
+    aes(x=long, y=lat, group=group),
+    color="black",
+    fill="blue"
+  ) + 
   coord_quickmap(xlim = xlim, ylim = ylim) +
-  xlab("Lengdargráða") + ylab("Breiddargráða")
-kort
+  xlab("Lengdargráða") +
+  ylab("Breiddargráða")
 ```
 
 Bætum síðan inn tilkynningarskyldureitunum frá okkar hafssvæðum:
@@ -349,8 +398,14 @@ yNV <- r2d(reitirNV)$lat
 yNAu <- r2d(reitirNAu)$lat
 
 kort +
-  geom_label(aes(x=xNV, y=yNV, label=as.character(reitirNV), fill="NV"), size=2) +
-  geom_label(aes(x=xNAu, y=yNAu, label=as.character(reitirNAu), fill="NAu"), size=2) +
+  geom_label(
+    aes(x=xNV, y=yNV, label=as.character(reitirNV), fill="NV"),
+    size=2
+  ) +
+  geom_label(
+    aes(x=xNAu, y=yNAu, label=as.character(reitirNAu), fill="NAu"),
+    size=2
+  ) +
   labs(fill="Hafsvæði")
 ```
 
