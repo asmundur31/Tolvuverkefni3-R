@@ -28,7 +28,7 @@ Byrjum á því að lesa gögninn inn og setjum þau í gagnaramma sem við köl
 ah <- read.csv("data98.csv", sep = ",")
 ```
 
-Búum nú til tvær nýjar breytur og látum báðar vera flokkabreytur. Búum fyrst til flokkabreytuna hafsvaedi sem hefur gildin "SV", "SA", "NV" eða "NAu" og hvert svæði er skilgreint út frá lengdar- og breiddargráðu sem við sækjum úr breytunni reit, þ.e. ef svæði hefur breiddargráðu minnni en 65 þá erum við fyrir sunnan annars fyrir norðan og ef svæði hefur lengdargráðu minni en -19 þá erum við fyrir vestan annars fyrir austan. Síðan búum við til flokkabreytuna kt2 sem segir til um hvort fiskur sé kynþrosk eða ókynþroska.
+Búum nú til tvær nýjar breytur og látum báðar vera flokkabreytur. Búum fyrst til flokkabreytuna hafsvaedi sem hefur gildin "SV", "SA", "NV" eða "NAu" og hvert svæði er skilgreint út frá lengdar- og breiddargráðu sem við sækjum úr breytunni reit, þ.e. ef svæði hefur breiddargráðu minnni en 65 þá erum við fyrir sunnan annars fyrir norðan og ef svæði hefur lengdargráðu minni en -19 þá erum við fyrir vestan annars fyrir austan. Síðan búum við til flokkabreytuna kt2 sem segir til um hvort fiskur sé kynþroska eða ókynþroska.
 ```{r, búum til nýjar breytur}
 r2d <-
 function(r)
@@ -68,7 +68,7 @@ taflab <- ah %>%
   count(name = "Fjöldi")
 
 taflab %>%
-  kable(align = "lll", caption = "Tafla 1: Sýnir fjölda fiska af hvoru kynþroskastigi eftir hafsvæðum.") %>%
+  kable(align = "lll", caption = "Tafla 1: Fjöldi fiska af hvoru kynþroskastigi eftir hafsvæðum") %>%
   kable_styling(position = "center")
 ```
 
@@ -85,12 +85,12 @@ for (i in 1:8)
 taflab[ , "Hlutfall"] <- f
 
 taflab %>%
-  kable(align = "llll", caption = "Tafla 2: Sýnir fjölda og hlutfall fiska af hvoru kynþroskastigi eftir hafsvæðum.") %>%
+  kable(align = "llll", caption = "Tafla 2: Fjöldi og hlutfall fiska af hvoru kynþroskastigi eftir hafsvæðum") %>%
   kable_styling(position = "center")
 ```
 
 Teiknum loks mynd sem sýnir fjölda fiska af hvoru kynþroskastigi í hverjum flokki af hafsvæðunum fjórum.
-```{r, Mynd sem er lýsandi fyrir fjölda fiska af hvoru kynþroskastigi í hverjum flokki af hafsvæðunum fjórum}
+```{r, mynd sem er lýsandi fyrir fjölda fiska af hvoru kynþroskastigi í hverjum flokki af hafsvæðunum fjórum}
 ggplot(ah, aes(hafsvaedi, fill = kt2)) + 
   geom_bar(position = 'dodge') + 
   labs(
@@ -114,17 +114,17 @@ taflac <- ah %>%
   )
 
 taflac %>%
-  kable(align = "lllll", caption = "Tafla 3: Tafla sem sýnir fjölda fiska, meðallengd, meðalþyngd og staðalfrávik lengdar eftir aldri.") %>%
+  kable(align = "lllll", caption = "Tafla 3: Tafla sem sýnir fjölda fiska, meðallengd, meðalþyngd og staðalfrávik lengdar eftir aldri") %>%
   kable_styling(position = "center")
 ```
 
 Úr töflunni má lesa að flestir fiskar eru þriggja til sex ára. Fáir fiskar eru yngri en þriggja ára og fiskum eldri en sex ára fer hratt minnkandi. Þá eykst lengd fiskanna með hækkandi aldri og dreifnin á gildi lengda verður meiri með hækkandi aldri. Þá þyngjast fiskarnir með hækkandi aldri.
 
-Teikum næst mynd sem sýnir lengd fiska eftir aldri þegar litið er á aldur sem samfellda breytu ásamt meðallengd fiska fyrir hvern aldurshóp sem stærri rauða punkta.
-```{r, Mynd sem sýnir lengd fiska eftir aldri}
+Teiknum næst mynd sem sýnir lengd fiska eftir aldri þegar litið er á aldur sem samfellda breytu ásamt meðallengd fiska fyrir hvern aldurshóp sem stærri rauða punkta.
+```{r, mynd sem sýnir lengd fiska eftir aldri}
 ggplot(ah, aes(x = aldur, y = le)) +
   labs(
-    title = "Graf sem sýnir lengd fiska eftir aldri þar sem aldur er samfelld breyta",
+    title = "Lengd fiska eftir aldri þar sem aldur er samfelld breyta",
     x = "Aldur",
     y = "Lengd"
   ) +
@@ -136,7 +136,7 @@ Teiknum svo einnig kassarit sem sýnir lengd fiska eftir aldri þegar litið er 
 ```{r, Kassarit sem sýnir lengd fiska eftir aldri}
 ggplot(ah, aes(x = factor(aldur), y = le)) +
   labs(
-    title = "Graf sem sýnir lengd fiska eftir aldri þar sem aldur er strjál breyta",
+    title = "Lengd fiska eftir aldri þar sem aldur er strjál breyta",
     x = "Aldur",
     y = "Lengd"
   ) +
@@ -166,16 +166,15 @@ set.seed(3110)
 fiskar2 <- sample_n(hafsvaedi2, 50, replace = F)
 
 fiskar <- rbind(fiskar1, fiskar2)
-fiskar # ATHUGA HVORT VIÐ VILJUM SÝNA TÖFLUNA
 ```
 
 ## e) liður
-Við athugum nú hvort marktækur munur sé á meðallengd fiska á hafsvæðunum tveimur. Ef marktækur munur er á meðallengd fiska á hafsvæðunum tveimur myndum við þurfa að hafna tilgátuprófinu:
+Við athugum nú hvort marktækur munur sé á meðallengd fiska á hafsvæðunum tveimur, $ \mu_{NV}$ og $\mu_{NAu}$.  Ef marktækur munur er á meðallengd fiska á hafsvæðunum tveimur myndum við þurfa að hafna núlltilgátunni í tilgátuprófinu:
 
 $$H_{0}: \mu_{NV} - \mu_{NAu} = 0\\
 H_{1}: \mu_{NV} - \mu_{NAu} \neq 0$$
 
-Forsendur fyrir því að tilgátuprófið gefi heilvita niðurstöðu er að gögnin séu normaldreifð og meðallengd fiska sé óháð hafsvæðunum tveimur. Framkvæmum nú t-próf með tvíhliða gagntilgátu og öryggið $1-\alpha = 0.95$.
+Forsendur fyrir því að tilgátuprófið gefi heilvita niðurstöðu er að gögnin séu normaldreifð og meðallengd fiska sé óháð hafsvæði. Framkvæmum nú t-próf með tvíhliða gagntilgátu og marktæknikröfu $1-\alpha = 0.95$.
 ```{r, tilgátupróf e liður}
 tilgatuprofe <- t.test(fiskar$le ~ fiskar$hafsvaedi)
 tilgatuprofe
@@ -236,9 +235,10 @@ for (i in 1:5000)
     count <- count + 1
 #Finnum p-gildi prófsins
 p <- count/5000
+p
 ```
 
-Við fáum sem sagt að p-gildi slembivalsstærðarinnar er $p = 0.6598$. Í e-lið fékkst p-gildið $p = 0.672$ úr t-prófinu og því ekki um mikinn mun að ræða. Líkt og í e-lið þá höfnum við ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha = 0.05$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. 
+Við fáum sem sagt að p-gildi slembivalsstærðarinnar er ekki ýkja ólík niðrustöðunni úr e-lið en þar fékkst p-gildið $p = 0.672$ úr t-prófinu. Líkt og í e-lið þá höfnum við ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha = 0.05$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. 
 
 
 ## h) liður
@@ -256,7 +256,7 @@ taflah %>%
   kable_styling(position = "center")
 ```
 
-Við athugum nú hvort marktækur munur sé á hlutfalli kynþroska fiska á hafsvæðunum tveimur, $ \rho_{NV}$ og $\rho_{NAu}$. Ef marktækur munur er á hlutfalli kynþroska fiska á hafsvæðunum tveimur myndum við þurfa að hafna tilgátuprófinu:
+Við athugum nú hvort marktækur munur sé á hlutfalli kynþroska fiska á hafsvæðunum tveimur, $ p_{NV}$ og $p_{NAu}$. Ef marktækur munur er á hlutfalli kynþroska fiska á hafsvæðunum tveimur myndum við þurfa að hafna núlltilgátunni í tilgátuprófinu:
 
 $$H_{0}: p_{NV} = p_{NAu}\\
 H_{1}: p_{NV} \neq p_{NAu}$$
@@ -267,9 +267,10 @@ tilgatuprofh <- prop.test(table(fiskar$hafsvaedi, fiskar$kt2))
 tilgatuprofh
 ```
 
-Niðurstöður úr prófinu gefa að prófstærðin er $0$ og p-gildið er $1$. Við höfnum ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha$. Það er því ekki marktækur munur á fjölda kynþroska fiska á hafsvæðunum tveimur. Þá fáum við að $[-0.1796337, 0.1796337]$ er $95\%$ öryggisbil fyrir fjölda kynþroska fiska á hafsvæðunum tveimur. Við sjáum að matið sjálft á hlutfalli kynþroska fiska á hafsvæðunum tveimur er $0.3$ fyrir hvort hafsvæði. Við athugum sérstaklega að öryggisbilið inniheldur $0$ en það stafar af því að við getum ekki hafnað núlltilgátunni. Það er sem sagt möguleiki á því að mismunur meðaltalanna sé 0.
+Niðurstöður úr prófinu gefa að prófstærðin er $0$ og p-gildið er $1$. Við höfnum ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha = 0.05$. Það er því ekki marktækur munur á hlutfalli kynþroska fiska á hafsvæðunum tveimur. Þá fáum við að $[-0.1796337, 0.1796337]$ er $95\%$ öryggisbil fyrir hlutfall kynþroska fiska á hafsvæðunum tveimur. Við sjáum að matið sjálft á hlutfalli kynþroska fiska á hafsvæðunum tveimur er $0.3$ fyrir hvort hafsvæði. Við athugum sérstaklega að öryggisbilið inniheldur $0$ en það stafar af því að við getum ekki hafnað núlltilgátunni. Það er sem sagt möguleiki á því að mismunur hlutfallanna sé 0.
 
 ## i) liður
+Teiknum mynd sem sýnir sambandið milli lengdar og þyngdar fiskanna á hafsvæðinu NV.
 ```{r, þyngd sem fall af lengd}
 #Veljum annað hafsvæðanna úr e-lið, hér veljum við hafsvæðið NV
 ggplot(fiskar1, aes(x = le, y = osl)) +
@@ -281,7 +282,7 @@ ggplot(fiskar1, aes(x = le, y = osl)) +
   ) 
 ```
 
-Við sjáum að þyngd vex með lengd og virðast fylgja veldisvexti. Við getum því ályktað að þyngd aukist í hlutfalli við veldi af lengd þ.e. að til séu fastar $\alpha$ og $c$ þannig að $w = \alpha l^{c}$ þar sem $w$ er þyngd og $l$ er lengd. Það er því eðlilegt að líta á stærðirnar á log-log grafi og fá þannig línulegt samband $ln(w) = cln(l)+ln(\alpha)$.
+Við sjáum að þyngd vex með lengd og virðast fylgja vísisveldisvexti. Við getum því ályktað að þyngd aukist í hlutfalli við veldi af lengd þ.e. að til séu fastar $\alpha$ og $c$ þannig að $w = \alpha l^{c}$ þar sem $w$ er þyngd og $l$ er lengd. Það er því eðlilegt að líta á stærðirnar á log-log grafi og fá þannig línulegt samband $ln(w) = cln(l)+ln(\alpha)$.
 ```{r, log-log graf þyngd sem fall af lengd}
 #Teiknum einnig mynd sem sýnir samband stærðanna á log-log grafi
 ggplot(fiskar1, aes(x = log(le), y = log(osl))) +
@@ -299,7 +300,7 @@ fit <- lm(log(osl) ~ log(le), data = fiskar1)
 summary(fit)
 ```
 
-Línulega aðhvarfsgreiningarlíkanið er því $w = 3.0199l - 4.7949$. Þá fáum við að skýringarhlutfallið er $R^2 = 0.983$ svo ætla má að samband frum- og fylgibreytu sé næstum línulegt og líkanið gefi traustverðuga spá um þyngd út frá lengd.
+Línulega aðhvarfsgreiningarlíkanið er því $ln(w) = 3.0199ln(l) - 4.7949$. Þá fáum við að skýringarhlutfallið er $R^2 = 0.983$ svo ætla má að samband frum- og fylgibreytu sé næstum línulegt og líkanið gefi traustverðuga spá um þyngd út frá lengd.
 
 ## j) liður
 Teiknum inn á myndina sem sýnir samband milli lengdar og þyngdar fiskanna bestu beinu línu ásamt bestu línu sem líkanið sem smíðað var í i-lið gefur (í rauðu).
