@@ -82,9 +82,12 @@ Teiknum loks mynd sem sýnir fjölda fiska af hvoru kynþroskastigi í hverjum f
 ```{r, Mynd sem er lýsandi fyrir fjölda fiska af hvoru kynþroskastigi í hverjum flokki af hafsvæðunum fjórum}
 ggplot(ah, aes(hafsvaedi, fill=kt2)) + 
   geom_bar(position='dodge') + 
-  xlab("Hafsvæði") + 
-  ylab("Fjöldi") +
-  labs(fill = "Þroskastig", caption = "Mynd 1: Mynd sem er lýsandi fyrir fjölda fiska af hvoru kynþroskastigi í hverjum flokki af hafsvæðunum fjórum.", Position = "center") +
+  labs(
+        title = "Fjöldi fiska af hvoru kynþroskastigi í hverjum flokki af hafsvæðunum fjórum",
+        x = "Hafsvæði",
+        y = "Fjöldi"
+        ) +
+  labs(fill = "Þroskastig", Position = "center") +
   theme(plot.caption.position = "plot")
 ```
 
@@ -108,7 +111,7 @@ Teikum næst mynd sem sýnir lengd fiska eftir aldri þegar litið er á aldur s
 ```{r, Mynd sem sýnir lengd fiska eftir aldri}
   ggplot(ah, aes(x = aldur, y = le)) +
     labs(
-        title = "Graf sem sýnir lengd fiska eftir aldri, þar sem aldur er samfelld breyta.",
+        title = "Graf sem sýnir lengd fiska eftir aldri þar sem aldur er samfelld breyta",
         x = "Aldur",
         y = "Lengd"
         ) +
@@ -120,7 +123,7 @@ Teiknum svo einnig kassarit sem sýnir lengd fiska eftir aldri þegar litið er 
 ```{r, Kassarit sem sýnir lengd fiska eftir aldri}
   ggplot(ah,aes(x = factor(aldur), y = le)) +
   labs(
-      title = "Graf sem sýnir lengd fiska eftir aldri, þar sem aldur er strjál breyta.",
+      title = "Graf sem sýnir lengd fiska eftir aldri þar sem aldur er strjál breyta",
       x = "Aldur",
       y = "Lengd"
       ) +
