@@ -953,7 +953,7 @@ NA
 </tbody>
 </table>
 <p>Úr töflunni má lesa að flestir fiskar eru þriggja til sex ára. Fáir fiskar eru yngri en þriggja ára og fiskum eldri en sex ára fer hratt minnkandi. Þá eykst lengd fiskanna með hækkandi aldri og dreifnin á gildi lengda verður meiri með hækkandi aldri. Þá þyngjast fiskarnir með hækkandi aldri.</p>
-<p>Teikum næst mynd sem sýnir lengd fiska eftir aldri þegar litið er á aldur sem samfellda breytu ásamt meðallengd fiska fyrir hvern aldurshóp sem stærri rauða punkta</p>
+<p>Teikum næst mynd sem sýnir lengd fiska eftir aldri þegar litið er á aldur sem samfellda breytu ásamt meðallengd fiska fyrir hvern aldurshóp sem stærri rauða punkta.</p>
 <pre class="r"><code>  ggplot(ah, aes(x = aldur, y = le)) +
     labs(
         title = &quot;Graf sem sýnir lengd fiska eftir aldri, þar sem aldur er samfelld breyta.&quot;,
@@ -976,10 +976,12 @@ NA
 </div>
 <div id="d-liður" class="section level2">
 <h2>d) liður</h2>
+<p>Veljum tvö hafsvæði með því að keyra eftirfarandi kóða sem velur tvö hafsvæði af hafsvæðunum fjórum af handahófi.</p>
 <pre class="r"><code>set.seed(3110)
 (svaedi&lt;-sample(unique(hafsvaedi),2))</code></pre>
 <pre><code>## [1] &quot;SA&quot; &quot;NV&quot;</code></pre>
-<p>Við fáum sem sagt hafsvæðin “NV” og “NAu”</p>
+<p>Við fáum sem sagt hafsvæðin “NV” og “NAu”.</p>
+<p>Veljum nú af handahófi 50 fiska af hvoru hafsvæði og sameinum svo fiskana í einn gagnaramma.</p>
 <pre class="r"><code>hafsvaedi1 &lt;- filter(ah, hafsvaedi == &quot;NV&quot;)
 hafsvaedi2 &lt;- filter(ah, hafsvaedi == &quot;NAu&quot;)
 set.seed(3110)
@@ -987,7 +989,7 @@ fiskar1 &lt;- sample_n(hafsvaedi1, 50, replace = F)
 set.seed(3110)
 fiskar2 &lt;- sample_n(hafsvaedi2, 50, replace = F)
 fiskar &lt;- rbind(fiskar1, fiskar2)
-fiskar</code></pre>
+fiskar # ATHUGA HVORT VIÐ VILJUM SÝNA TÖFLUNA</code></pre>
 <pre><code>##      recid reit smrt tog_nr dag man dyp_min dyp_max vf nr le ky kt aldur   osl
 ## 1   100122  621    2      1  12   3     170     188 73  5 56  1  1     5  1598
 ## 2   100157  620    3      1  16   3     187     207 73  4 73  2  4     7  3848
