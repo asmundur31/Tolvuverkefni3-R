@@ -300,7 +300,7 @@ fit <- lm(log(osl) ~ log(le), data = fiskar1)
 summary(fit)
 ```
 
-Línulega aðhvarfsgreiningarlíkanið er því $ln(w) = 3.0199ln(l) - 4.7949$. Þá fáum við að skýringarhlutfallið er $R^2 = 0.983$ svo ætla má að samband frum- og fylgibreytu sé næstum línulegt og líkanið gefi traustverðuga spá um þyngd út frá lengd.
+Línulega aðhvarfsgreiningarlíkanið er því $ln(w) = 3.0199ln(l) - 4.7949$. Þá fáum við að skýringarhlutfallið er $R^2 = 0.983$ svo ætla má að samband frum- og fylgibreytu sé næstum línulegt og líkanið gefi traustverðuga spá um þyngd út frá lengd. Þá getum við sagt að samband milli lengdar og þyngdar fiskanna er $w=e^{-4.7949}}\cdot l^{3.0199$.
 
 ## j) liður
 Teiknum inn á myndina sem sýnir samband milli lengdar og þyngdar fiskanna bestu beinu línu ásamt bestu línu sem líkanið sem smíðað var í i-lið gefur (í rauðu).
