@@ -22,11 +22,12 @@ library(reshape2)
 ```
 
 ## a) liður
-Byrjum á því að lesa inn gögnin:
+Byrjum á því að lesa gögninn inn og setjum þau í gagnaramma sem við köllum ah.
 ```{r, lesa gögn}
 ah <- read.csv("data98.csv", sep=",")
 ```
 
+Búum nú til tvær nýjar breytur og látum báðar vera flokkabreytur. Búum fyrst til flokkabreytuna hafsvaedi sem hefur gildin "SV", "SA", "NV" eða "NAu" og hvert svæði er skilgreint út frá lengdar- og breiddargráðu sem við sækjum úr breytunni reit, þ.e. ef svæði hefur breiddargráðu minnni en 65 þá erum við fyrir sunnan annars fyrir norðan og ef svæði hefur lengdargráðu minni en -19 þá erum við fyrir vestan annars fyrir austan. Síðan búum við til flokkabreytuna kt2 sem segir til um hvort fiskur sé kynþrosk eða ókynþroska.
 ```{r, búum til nýjar breytur}
 r2d <-
 function(r)
@@ -53,13 +54,17 @@ ah <- ah %>%
 
 
 ## b) liður
+Fáum töflu sem sýnir fjölda fiska af hvoru kynþroskastigi eftir hafsvæðum.
 ```{r, tafla fyrir fjölda fiska af hvoru kynþroskastigi eftir hafsvæðum}
 taflab <- ah %>%
-  group_by("Hafsvæði" = hafsvaedi,kt2) %>%
-  count(kt2, name="Fjöldi")
-taflab
+  group_by("Hafsvæði" = hafsvaedi, "Þroskastig" = kt2) %>%
+  count(name = "Fjöldi")
+taflab %>%
+  kable(align = "lll", caption="Tafla 1: Sýnir fjölda fiska af hvoru kynþroskastigi eftir hafsvæðum.") %>%
+  kable_styling(position = "center")
 ```
 
+Búum svo til aðra töflu þar sem við bætum við kynþroskahlutfalli á hverju hafsvæði.
 ```{r, tafla sem sýnir kynþroskahlutfall á hverju hafsvæði}
 c <- vector()
 f <- vector()
@@ -68,39 +73,58 @@ for (i in 1:4)
 for (i in 1:8)
   f[i] = taflab$Fjöldi[i]/c[ceiling(i/2)]
 taflab[ , "Hlutfall"] <- f
-taflab
+taflab %>%
+  kable(align = "llll", caption="Tafla 2: Sýnir fjölda og hlutfall fiska af hvoru kynþroskastigi eftir hafsvæðum.") %>%
+  kable_styling(position = "center")
 ```
+
+Teiknum loks mynd sem sýnir fjölda fiska af hvoru kynþroskastigi í hverjum flokki af hafsvæðunum fjórum.
 ```{r, Mynd sem er lýsandi fyrir fjölda fiska af hvoru kynþroskastigi í hverjum flokki af hafsvæðunum fjórum}
-ggplot(ah, aes(hafsvaedi, fill=kt2)) + geom_bar(position='dodge') +
-xlab("Hafsvæði") + ylab("Fjöldi")
+ggplot(ah, aes(hafsvaedi, fill=kt2)) + 
+  geom_bar(position='dodge') + 
+  xlab("Hafsvæði") + 
+  ylab("Fjöldi") +
+  labs(fill = "Þroskastig", caption = "Mynd 1: Mynd sem er lýsandi fyrir fjölda fiska af hvoru kynþroskastigi í hverjum flokki af hafsvæðunum fjórum.", Position = "center") +
+  theme(plot.caption.position = "plot")
 ```
 
 ## c) liður
+Sýnum töflu með fjölda fiska, meðallengd, meðalþyngd og staðalfrávik lengdar þeirra eftir aldri.
 ```{r, tafla sem sýnir fjölda fiska, meðallengd, meðalþyngd og staðalfrávik lengdar eftir aldri}
 taflac <- ah %>%
-  group_by(aldur) %>%
-  summarise("Fjöldi fiska" = length(aldur),"Meðallengd" = mean(le), "Meðalþyngd" =mean(osl), "Staðalfrávik lengdar" = sd(le)) #%>% kable(align = "lllll") %>%
-  #kable_styling()
-taflac
+  group_by("Aldur" = aldur) %>%
+  summarise("Fjöldi fiska" = length(aldur),
+            "Meðallengd" = mean(le),
+            "Meðalþyngd" =mean(osl),
+            "Staðalfrávik lengdar" = sd(le))
+taflac %>%
+  kable(align = "lllll", caption="Tafla 3: Tafla sem sýnir fjölda fiska, meðallengd, meðalþyngd og staðalfrávik lengdar eftir aldri.") %>%
+  kable_styling(position = "center")
 ```
+
 Úr töflunni má lesa að flestir fiskar eru þriggja til sex ára. Fáir fiskar eru yngri en þriggja ára og fiskum eldri en sex ára fer hratt minnkandi. Þá eykst lengd fiskanna með hækkandi aldri og dreifnin á gildi lengda verður meiri með hækkandi aldri. Þá þyngjast fiskarnir með hækkandi aldri.
 
+Teikum næst mynd sem sýnir lengd fiska eftir aldri þegar litið er á aldur sem samfellda breytu ásamt meðallengd fiska fyrir hvern aldurshóp sem stærri rauða punkta.
 ```{r, Mynd sem sýnir lengd fiska eftir aldri}
-  ggplot(ah, aes(x = aldur, y = le)) + labs(
-        title = "Graf sem sýnir lengd fiska eftir aldri",
+  ggplot(ah, aes(x = aldur, y = le)) +
+    labs(
+        title = "Graf sem sýnir lengd fiska eftir aldri, þar sem aldur er samfelld breyta.",
         x = "Aldur",
         y = "Lengd"
-    ) +
+        ) +
     geom_point(color = 1, size = 2) +
-    geom_point(aes(x = aldur, y = Meðallengd),taflac, color = 2, size = 3)
+    geom_point(aes(x = Aldur, y = Meðallengd),taflac, color = 2, size = 3)
 ```
 
+Teiknum svo einnig kassarit sem sýnir lengd fiska eftir aldri þegar litið er á aldur sem strjála breytu.
 ```{r, Kassarit sem sýnir lengd fiska eftir aldri}
-  ggplot(ah,aes(x = factor(aldur), y = le)) + labs(
-        x = "Aldur",
-        y = "Lengd"
-    ) +
-    geom_boxplot()
+  ggplot(ah,aes(x = factor(aldur), y = le)) +
+  labs(
+      title = "Graf sem sýnir lengd fiska eftir aldri, þar sem aldur er strjál breyta.",
+      x = "Aldur",
+      y = "Lengd"
+      ) +
+  geom_boxplot()
 ```
 
 Nokkuð er um útlaga og þá sérstaklega í aldurshópununm fyrir miðju kassaritsins þ.e. meðal þriggja til átta ára fiska. Kassarit hentar vel til að bera kennsl á útlaga og meta dreifingu gagna. Kassarit geta hentað vel þegar setja á fram gagnasöfn þar sem mikið af gildum eru í hverjum flokki myndrænt því þau sýna ekki alla gagnapunkta heldur leggja áherslu á hver dreifing gagnanna er þess í stað. Framsetningin að ofan þar sem litið var á aldur sem samfellda breytu hefur einnig kosti þó erfiðara sé að greina útlaga á þeirri mynd því þar eru leitast við að sýna alla gagnapunkta. Sú mynd gefur skýrari niðurstöður fyrir þá flokka sem innihalda tiltölulega fáa gagnapunkta og kann að henta betur fyrir gagnasöfn þar sem hver flokkur hefur tiltölulega fáa gagnapunkta. 
@@ -129,7 +153,7 @@ $$H_{0}: \mu_{NV} - \mu_{NAu} = 0\\
 H_{1}: \mu_{NV} - \mu_{NAu} \neq 0$$
 
 Forsendur fyrir því að tilgátuprófið gefi heilvita niðurstöðu er að gögnin séu normaldreifð og meðallengd fiska sé óháð hafsvæðunum tveimur. Framkvæmum nú t-próf með tvíhliða gagntilgátu og öryggið $1-\alpha = 0.95$.
-```{r, tilgátupróf}
+```{r, tilgátupróf e liður}
 tilgatuprofe <- t.test(fiskar$le~fiskar$hafsvaedi)
 tilgatuprofe
 t0 <- tilgatuprofe$statistic
@@ -200,7 +224,7 @@ $$H_{0}: p_{NV} = p_{NAu}\\
 H_{1}: p_{NV} \neq p_{NAu}$$
 
 Framkvæmum nú próf fyrir $p$ í tvíkostadreifingu með tvíhliða gagntilgátu og marktæknikröfu $1-\alpha = 0.95$.
-```{r, tilgátupróf}
+```{r, tilgátupróf h liður}
 tilgatuprofh <- prop.test(table(fiskar$hafsvaedi, fiskar$kt2))
 tilgatuprofh
 ```
