@@ -339,11 +339,11 @@ ggplot(data = fiskar1, aes(x = factor(aldur), y = le)) +
 Smíðum nú tvenn líkön. Annars vegar líkan sem leggur beina línu í gegnum gögnin og síðan frjálst líkan með aldurinn sem flokkabreytu.
 ```{r, tvenns konar líkön borin saman}
 litid <- lm(le ~ aldur, data = fiskar1)
-stort <- lm(le ~ factor(aldur), data=fiskar1)
+stort <- lm(le ~ factor(aldur), data = fiskar1)
 anova(litid, stort)
 ```
 
-Við sjáum af kassaritinu að ofan að það er tiltölulega lítill breytileiki innan hvers aldurshóps og heildarbreytileiki gagnanna þvi sömuleiðis tiltölulega lítill. Við fáum út úr prófinu p-gildið $p = 0.5883$ þannig við höfnum ekki núlltilgátunni um að líkönin falli jafn vel að gögnunum. Við ályktum því að ekki sé marktækur munur á því hve vel líkönin falla að gögnunum.  
+Við sjáum af kassaritinu að ofan að það er tiltölulega lítill breytileiki innan hvers aldurshóps og heildarbreytileiki gagnanna þvi sömuleiðis tiltölulega lítill. Við fáum út úr prófinu p-gildið $p = 0.5883$ þannig við höfnum ekki núlltilgátunni um að líkönin falli jafn vel að gögnunum. Við ályktum því að ekki sé marktækur munur á því hve vel líkönin falla að gögnunum.
 
 ## Bónusspurning
 Nú munum við teikna mynd af Íslandi. Sækjum fyrst gögn fyrir útlínur Íslands og útlínur fyrir dýpt á hafsvæðum og teiknum mynd af Íslandi ásamt dýptarlínum.
