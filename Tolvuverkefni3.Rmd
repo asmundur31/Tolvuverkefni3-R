@@ -300,11 +300,11 @@ fit <- lm(log(osl) ~ log(le), data = fiskar1)
 summary(fit)
 ```
 
-Línulega aðhvarfsgreiningarlíkanið er því $ln(w) = 3.0199ln(l) - 4.7949$. Þá fáum við að skýringarhlutfallið er $R^2 = 0.983$ svo ætla má að samband frum- og fylgibreytu sé næstum línulegt og líkanið gefi traustverðuga spá um þyngd út frá lengd. Þá getum við sagt að samband milli lengdar og þyngdar fiskanna er $w=e^{-4.7949}}\cdot l^{3.0199}$.
+Línulega aðhvarfsgreiningarlíkanið er því $ln(w) = 3.0199ln(l) - 4.7949$. Þá getum við sagt að samband milli lengdar og þyngdar fiskanna er $w=e^{-4.7949}l^{3.0199}$. Þá fáum við að skýringarhlutfallið er $R^2 = 0.983$ svo ætla má að samband frum- og fylgibreytu sé næstum línulegt. Að auki þá sjáum við að p-gildið er um $2.2e-16$ sem er um það bil "machine epsilon" og því ljóst að við munum alltaf hafna núlltilgátunni um að hallatalan sé núll þ.e. við getum dregið þá ályktun að þyngd gefins fisks sé almennt háð lengd hans.
 
 ## j) liður
 Teiknum inn á myndina sem sýnir samband milli lengdar og þyngdar fiskanna bestu beinu línu ásamt bestu línu sem líkanið sem smíðað var í i-lið gefur (í rauðu).
-```{r, samanburður á línum}
+```{r, samanburður á línum, warning=FALSE}
 #Búum til nýjan gagnaramma sem inniheldur spábreytugildin úr líkaninu og gildi háðu breytunnar úr líkaninu
 gogn_likan <-
   data.frame(
@@ -324,13 +324,13 @@ ggplot(fiskar1, aes(x = le, y = osl)) +
 ```
 
 ## k) liður
-Teiknum kasssarit sem sýnir lengd á móti aldri fyrir hafsvæðið NAu
-```{r, kassarit lengd á móti aldri fyrir hafsvæðið NAu}
+Teiknum kasssarit sem sýnir lengd á móti aldri fyrir hafsvæðið NV
+```{r, kassarit lengd á móti aldri fyrir hafsvæðið NV}
 #Teiknum kasssarit sem sýnir lengd á móti aldri
-ggplot(data = fiskar2, aes(x = factor(aldur), y = le)) +
+ggplot(data = fiskar1, aes(x = factor(aldur), y = le)) +
   geom_boxplot() +
   labs(
-    title = "Kassarit sem sýnir lengd á móti aldri fyrir hafsvæðið NAu",
+    title = "Kassarit sem sýnir lengd á móti aldri fyrir hafsvæðið NV",
     x = "Aldur",
     y = "Lengd"
   )
@@ -338,18 +338,14 @@ ggplot(data = fiskar2, aes(x = factor(aldur), y = le)) +
 
 Smíðum nú tvenn líkön. Annars vegar líkan sem leggur beina línu í gegnum gögnin og síðan frjálst líkan með aldurinn sem flokkabreytu.
 ```{r, tvenns konar líkön borin saman}
-litid <- lm(le ~ aldur, data = fiskar2)
-stort <- lm(le ~ factor(aldur), data=fiskar2)
+litid <- lm(le ~ aldur, data = fiskar1)
+stort <- lm(le ~ factor(aldur), data=fiskar1)
 anova(litid, stort)
 ```
 
-Við sjáum af kassaritinu að ofan að almennt fer lengd fiska vaxandi með hækkandi aldri. Dreifni í lengd innan mismunandi aldurshópa er nokkurn veginn jöfn fyrir aldurshópana $4, 5$ og $6$ en minni fyrir þá aldurshópa eldri fiska enda um mun færri fiska í hverjum hópi að ræða í þeim aldurshópum. Við viljum athuga hvort meðaltal lengda hinna mismunandi aldurshópa séu mismunandi. Af myndinni að ofan sjáum við að svo ætti líklegast að vera en við ætlum nú að athuga hvort svo sé með einþátta fervikagreiningu. Við athugum nú hvort marktækur munur, með $95\%$ marktæknikröfu, sé á meðallengd fiska eftir aldurshópum. Látum $\mu_{i}$ tákna meðaltal lengda fiska í aldurshópi $i$. Við viljum kanna tilgátuna
+Við sjáum af kassaritinu að ofan að það er tiltölulega lítill breytileiki innan hvers aldurshóps og heildarbreytileiki gagnanna þvi sömuleiðis tiltölulega lítill. Við fáum út úr prófinu p-gildið $p = 0.5883$ þannig við höfnum ekki núlltilgátunni um að líkönin falli jafn vel að gögnunum. Við ályktum því að ekki sé marktækur munur á því hve vel líkönin falla að gögnunum.  
 
-$$H_{0}: \mu_{3} = \mu_{4} = ... = \mu_{10}\\$$
-
-Á móti gagntilgátunni $H_{1}:$ Að minsta kosti eitt meðaltal er frábrugðið hinum. Niðurstöður úr einþátta fervikagreiningunni gefa okkur p-gildið $p = 0.003151$ sem er lægra en $\alpha = 0.05$ og því höfnum við núlltilgátunni. Niðurstaðan er því sú að minnsta kosti eitt meðaltal er frábrugðið hinum.
-
-## Bónusspurnin
+## Bónusspurning
 Nú munum við teikna mynd af Íslandi. Sækjum fyrst gögn fyrir útlínur Íslands og útlínur fyrir dýpt á hafsvæðum og teiknum mynd af Íslandi ásamt dýptarlínum.
 ```{r}
 Iceland <- map_data("world", region = "Iceland")
