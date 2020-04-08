@@ -118,7 +118,7 @@ taflac %>%
   kable_styling(position = "center")
 ```
 
-Úr töflunni má lesa að flestir fiskar eru þriggja til sex ára. Fáir fiskar eru yngri en þriggja ára og fiskum eldri en sex ára fer hratt minnkandi. Þá eykst lengd fiskanna með hækkandi aldri og dreifnin á gildi lengda verður meiri með hækkandi aldri. Þá þyngjast fiskarnir með hækkandi aldri.
+Úr töflunni má lesa að flestir fiskar eru þriggja til sex ára. Fáir fiskar eru yngri en þriggja ára og fiskum eldri en sex ára fer hratt minnkandi. Þá eykst lengd og þyngd fiskanna með hækkandi aldri og dreifnin á gildi lengda verður meiri með hækkandi aldri en fyrir þá aldurshópa þar sem einungis er einn fiskur gefur R upp staðalfrávikið sem NA gildi. Þá þyngjast fiskarnir með hækkandi aldri.
 
 Teiknum næst mynd sem sýnir lengd fiska eftir aldri þegar litið er á aldur sem samfellda breytu ásamt meðallengd fiska fyrir hvern aldurshóp sem stærri rauða punkta.
 ```{r, mynd sem sýnir lengd fiska eftir aldri}
@@ -238,7 +238,7 @@ p <- count/5000
 p
 ```
 
-Við fáum sem sagt að p-gildi slembivalsstærðarinnar er ekki ýkja ólík niðrustöðunni úr e-lið en þar fékkst p-gildið $p = 0.672$ úr t-prófinu. Líkt og í e-lið þá höfnum við ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha = 0.05$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. 
+Við fáum sem sagt að p-gildi slembivalsstærðarinnar er ekki ýkja ólík niðurstöðunni úr e-lið en þar fékkst p-gildið $p = 0.672$ úr t-prófinu. Líkt og í e-lið þá höfnum við ekki $H_{0}$ þar sem p-gildið er hærra en $\alpha = 0.05$. Það er því ekki marktækur munur á meðallengd fiska á hafsvæðunum tveimur. 
 
 
 ## h) liður
@@ -246,7 +246,6 @@ Eftirfarandi tafla sýnir fjölda kynþroska og ókynþroska fiska á hvoru hafs
 
 ```{r,  Tafla sýnir fjölda kynþroska og ókynþroska fiska á hvoru hafsvæði}
 fiskar$hafsvaedi <- droplevels(fiskar$hafsvaedi)
-
 taflah <- fiskar %>%
   group_by("Hafsvæði" = hafsvaedi, "Þroskastig" = kt2) %>%
   count(name = "Fjöldi")
@@ -300,7 +299,7 @@ fit <- lm(log(osl) ~ log(le), data = fiskar1)
 summary(fit)
 ```
 
-Línulega aðhvarfsgreiningarlíkanið er því $ln(w) = 3.0199ln(l) - 4.7949$. Þá getum við sagt að samband milli lengdar og þyngdar fiskanna er $w=e^{-4.7949}l^{3.0199}$. Þá fáum við að skýringarhlutfallið er $R^2 = 0.983$ svo ætla má að samband frum- og fylgibreytu sé næstum línulegt. Að auki þá sjáum við að p-gildið er um $2.2e-16$ sem er um það bil "machine epsilon" og því ljóst að við munum alltaf hafna núlltilgátunni um að hallatalan sé núll þ.e. við getum dregið þá ályktun að þyngd gefins fisks sé almennt háð lengd hans.
+Línulega aðhvarfsgreiningarlíkanið er því $ln(w) = 3.0199ln(l) - 4.7949$. Þá getum við sagt að samband milli lengdar og þyngdar fiskanna er $w=e^{-4.7949}l^{3.0199}$. Þá fáum við að skýringarhlutfallið er $R^2 = 0.983$ svo ætla má að samband frum- og fylgibreytu sé næstum línulegt. Að auki þá sjáum við að p-gildið er um $2.2e-16$ sem er um það bil "machine epsilon" og því ljóst að við munum alltaf hafna núlltilgátunni um að hallatalan sé núll þ.e. við getum dregið þá ályktun að þyngd gefins fisks sé almennt háð lengd hans. Við teljum nokkuð skynsamlegt að nota líkanið til þess að spá fyrir um þyngd fisks út frá lengd hans miðað við fengnar niðurstöður. 
 
 ## j) liður
 Teiknum inn á myndina sem sýnir samband milli lengdar og þyngdar fiskanna bestu beinu línu ásamt bestu línu sem líkanið sem smíðað var í i-lið gefur (í rauðu).
