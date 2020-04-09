@@ -377,7 +377,7 @@ kort <- ggplot() +
 
 Bætum síðan inn tilkynningarskyldureitum frá okkar hafssvæðum:
 
-```{r, tilkynningarskyldureitir}
+```{r, tilkynningarskildureitir}
 reitirNV <- filter(ah, hafsvaedi == "NV")$reit
 reitirNAu <- filter(ah, hafsvaedi == "NAu")$reit
 
