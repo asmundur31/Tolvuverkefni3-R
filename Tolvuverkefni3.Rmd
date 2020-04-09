@@ -163,7 +163,7 @@ fiskar <- rbind(fiskar1, fiskar2)
 ```
 
 ## e) liður
-Við athugum nú hvort marktækur munur sé á meðallengd fiska á hafsvæðunum tveimur, $ \mu_{NV}$ og $\mu_{NAu}$.  Ef marktækur munur er á meðallengd fiska á hafsvæðunum tveimur myndum við þurfa að hafna núlltilgátunni í tilgátuprófinu:
+Við athugum nú hvort marktækur munur sé á meðallengd fiska á hafsvæðunum tveimur, $\mu_{NV}$ og $\mu_{NAu}$.  Ef marktækur munur er á meðallengd fiska á hafsvæðunum tveimur myndum við þurfa að hafna núlltilgátunni í tilgátuprófinu:
 
 $$H_{0}: \mu_{NV} - \mu_{NAu} = 0\\
 H_{1}: \mu_{NV} - \mu_{NAu} \neq 0$$
@@ -252,7 +252,7 @@ taflah %>%
   kable_styling(position = "center")
 ```
 
-Við athugum nú hvort marktækur munur sé á hlutfalli kynþroska fiska á hafsvæðunum tveimur, $ p_{NV}$ og $p_{NAu}$. Ef marktækur munur er á hlutfalli kynþroska fiska á hafsvæðunum tveimur myndum við þurfa að hafna núlltilgátunni í tilgátuprófinu:
+Við athugum nú hvort marktækur munur sé á hlutfalli kynþroska fiska á hafsvæðunum tveimur, $p_{NV}$ og $p_{NAu}$. Ef marktækur munur er á hlutfalli kynþroska fiska á hafsvæðunum tveimur myndum við þurfa að hafna núlltilgátunni í tilgátuprófinu:
 
 $$H_{0}: p_{NV} = p_{NAu}\\
 H_{1}: p_{NV} \neq p_{NAu}$$
@@ -398,7 +398,7 @@ kort +
   ) +
   labs(
     fill = "Hafsvæði",
-    title = "Mynd af Íslandi ásamt tilkynningarskildureitum fyrir hafsvæðin NV og NAu"
+    title = "Tilkynningarskyldureitir fyrir hafsvæðin NV og NAu"
   )
 ```
 
