@@ -64,8 +64,11 @@ ah <- ah %>%
 Fáum töflu sem sýnir fjölda fiska af hvoru kynþroskastigi eftir hafsvæðum.
 ```{r, tafla fyrir fjölda fiska af hvoru kynþroskastigi eftir hafsvæðum}
 taflab <- ah %>%
-  group_by("Hafsvæði" = hafsvaedi, "Þroskastig" = kt2) %>%
-  count(name = "Fjöldi")
+  group_by("Hafsvæði" = hafsvaedi) %>%
+  summarise(
+    "Kynþroska" = sum(kt2 == "Kynþroska"),
+    "Ókynþroska" = sum(kt2 == "Ókynþroska")
+  )
 
 taflab %>%
   kable(align = "lll", caption = "Tafla 1: Fjöldi fiska af hvoru kynþroskastigi eftir hafsvæðum") %>%
@@ -74,18 +77,9 @@ taflab %>%
 
 Búum svo til aðra töflu þar sem við bætum við kynþroskahlutfalli á hverju hafsvæði.
 ```{r, tafla sem sýnir kynþroskahlutfall á hverju hafsvæði}
-c <- vector()
-f <- vector()
-
-for (i in 1:4)
-  c[i] = taflab$Fjöldi[2*i-1]+taflab$Fjöldi[2*i]
-for (i in 1:8)
-  f[i] = taflab$Fjöldi[i]/c[ceiling(i/2)]
-
-taflab[ , "Hlutfall"] <- f
-
-taflab %>%
-  kable(align = "llll", caption = "Tafla 2: Fjöldi og hlutfall fiska af hvoru kynþroskastigi eftir hafsvæðum") %>%
+t <- table("Hafsvæði" = ah$hafsvaedi, ah$kt2)
+prop.table(t, margin = 1) %>%
+  kable(align = "lll", caption = "Tafla 2: Fjöldi og hlutfall fiska af hvoru kynþroskastigi eftir hafsvæðum") %>%
   kable_styling(position = "center")
 ```
 
@@ -246,10 +240,13 @@ Eftirfarandi tafla sýnir fjölda kynþroska og ókynþroska fiska á hvoru hafs
 
 ```{r,  Tafla sýnir fjölda kynþroska og ókynþroska fiska á hvoru hafsvæði}
 fiskar$hafsvaedi <- droplevels(fiskar$hafsvaedi)
-taflah <- fiskar %>%
-  group_by("Hafsvæði" = hafsvaedi, "Þroskastig" = kt2) %>%
-  count(name = "Fjöldi")
 
+taflah <- fiskar %>%
+  group_by("Hafsvæði" = hafsvaedi) %>%
+  summarise(
+    "Kynþroska" = sum(kt2 == "Kynþroska"),
+    "Ókynþroska" = sum(kt2 == "Ókynþroska")
+  )
 taflah %>%
   kable(align = "lll", caption = "Tafla 4: Tafla yfir fjölda kynþroska og ókynþroska fiska á hvoru hafsvæði.") %>%
   kable_styling(position = "center")
